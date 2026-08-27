@@ -1,0 +1,16 @@
+{
+  "name": "ParkWise Nairobi Occupancy",
+  "short_name": "ParkWise",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "description": "Smart parking prediction and routing for Nairobi.",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/75/75783.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
