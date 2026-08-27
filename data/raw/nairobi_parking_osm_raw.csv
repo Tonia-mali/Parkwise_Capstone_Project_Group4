@@ -1,0 +1,468 @@
+osm_id,facility_name,latitude,longitude,parking_type,fee,capacity,operating_hours,access
+87624845,Unnamed Parking,-1.3376014818181818,36.768709490909096,surface,unknown,,24/7,public
+87632732,Mamba Village,-1.3331726,36.7512371,surface,unknown,,24/7,customers
+94517897,Stepping Stones kindergarten,-1.3313120428571428,36.751463228571424,surface,unknown,,24/7,public
+135338238,Unnamed Parking,-1.3408572833333334,36.75831036666667,surface,unknown,,24/7,public
+135338244,CITAM Karen parking lot,-1.3402829,36.75913500909091,surface,unknown,,24/7,public
+160272387,Galleria Parking Lot,-1.3430992545454548,36.76471897272727,surface,unknown,,24/7,public
+260965997,Unnamed Parking,-1.34189874,36.763371660000004,surface,unknown,,24/7,public
+265937519,Unnamed Parking,-1.33647766,36.77949357999999,surface,no,,24/7,customers
+265937670,Unnamed Parking,-1.3351493399999999,36.78023352,surface,no,,24/7,yes
+310029007,Otiende Shopping Center Parking,-1.3236064181818181,36.77978397272728,surface,no,,24/7,public
+563566523,Unnamed Parking,-1.3428267,36.763182477777775,surface,unknown,,24/7,public
+952524608,Unnamed Parking,-1.341024025,36.75736453333334,surface,unknown,,24/7,public
+5372421009,Sunshine Secondary School Parking Lot,-1.3204018,36.8090477,surface,unknown,,24/7,public
+40421805,Unnamed Parking,-1.32464516,36.803139980000005,surface,unknown,,24/7,public
+226442362,Unnamed Parking,-1.32033736,36.79955567,surface,unknown,,24/7,public
+265936949,Unnamed Parking,-1.33611354,36.787868499999995,surface,unknown,,24/7,public
+265937429,Unnamed Parking,-1.33513664,36.78862540000001,surface,unknown,,24/7,public
+265937446,Unnamed Parking,-1.33247264,36.78394446,surface,unknown,,24/7,public
+265939558,Unnamed Parking,-1.3319317,36.78250852,surface,unknown,,24/7,public
+265939559,Unnamed Parking,-1.33210632,36.78198963999999,surface,unknown,,24/7,public
+369118069,Unnamed Parking,-1.3292880285714286,36.80045162857142,surface,no,,24/7,customers
+1004221453,Unnamed Parking,-1.32054994,36.80984074,surface,unknown,,24/7,public
+1171087458,Unnamed Parking,-1.32586675,36.802661775,surface,unknown,,24/7,customers
+1310910106,Unnamed Parking,-1.3283305133333336,36.803422059999995,surface,unknown,,24/7,customers
+1310910108,Unnamed Parking,-1.3286208142857145,36.8037796,surface,unknown,,24/7,customers
+1533941440,Unnamed Parking,-1.3311810000000002,36.78992652857143,surface,unknown,,24/7,public
+1533941442,Unnamed Parking,-1.3319735,36.79258146,surface,unknown,,24/7,public
+6207546810,DRSRS Parking,-1.3222633,36.8360328,surface,unknown,,24/7,public
+271393404,Unnamed Parking,-1.32486388,36.834070940000004,surface,unknown,,24/7,public
+271393405,Unnamed Parking,-1.32537734,36.834202860000005,surface,unknown,,24/7,public
+271394056,Unnamed Parking,-1.32371125,36.83527386666666,surface,unknown,,24/7,public
+271394065,Unnamed Parking,-1.32217836,36.83493122,surface,unknown,,24/7,public
+456319832,Unnamed Parking,-1.3253872857142857,36.832048885714286,surface,unknown,,24/7,public
+456320326,Unnamed Parking,-1.32419538,36.83035253999999,surface,unknown,,24/7,public
+456331339,Unnamed Parking,-1.32141378,36.8367742,surface,unknown,,24/7,public
+456332976,Unnamed Parking,-1.3291243714285714,36.83244952857142,surface,unknown,,24/7,public
+6207546864,2.5.4 Ole-sereni Parking,-1.3272101,36.8449167,surface,unknown,,24/7,public
+6207581201,Vision Plaza Parking Lot,-1.3273514,36.8524338,surface,unknown,,24/7,public
+9354705932,Emara Ole-sereni Parking,-1.3266544,36.8464008,surface,unknown,,24/7,public
+365004340,Unnamed Parking,-1.3233082999999999,36.84881394,surface,unknown,,24/7,public
+369279690,Unnamed Parking,-1.31993782,36.846944300000004,surface,unknown,,24/7,public
+1548466193,Unnamed Parking,-1.3249208,36.8496452625,surface,unknown,,24/7,public
+1548466196,Unnamed Parking,-1.3246963,36.848567833333334,street_side,unknown,,24/7,public
+1548466197,Unnamed Parking,-1.3249668666666667,36.84859611111111,street_side,unknown,,24/7,public
+1548466198,Unnamed Parking,-1.3241301272727275,36.84861124545454,surface,unknown,,24/7,public
+1549029426,Unnamed Parking,-1.3265058,36.84824091666667,street_side,unknown,,24/7,public
+1550656747,Unnamed Parking,-1.3303984400000002,36.86405446,street_side,unknown,,24/7,public
+1550656748,Unnamed Parking,-1.33025642,36.86587872,street_side,unknown,,24/7,public
+1550656749,Unnamed Parking,-1.33026272,36.86509044,street_side,unknown,,24/7,public
+1550656750,Unnamed Parking,-1.3301224400000002,36.86611276,street_side,unknown,,24/7,public
+1550656751,Unnamed Parking,-1.3299770800000001,36.86715564,street_side,unknown,,24/7,public
+1550656752,Unnamed Parking,-1.32984526,36.8681529,street_side,unknown,,24/7,public
+1550656753,Unnamed Parking,-1.32952312,36.86923844,street_side,unknown,,24/7,public
+1550656754,Unnamed Parking,-1.32950986,36.86929672,street_side,unknown,,24/7,public
+1550656755,Unnamed Parking,-1.3287927857142858,36.86934777142857,surface,unknown,,24/7,public
+1550657962,Unnamed Parking,-1.3305205199999999,36.863039119999996,surface,unknown,,24/7,public
+1550657963,Unnamed Parking,-1.33027524,36.86272318,street_side,unknown,,24/7,public
+1550657964,Unnamed Parking,-1.33007822,36.86335712,street_side,unknown,,24/7,public
+1550657965,Unnamed Parking,-1.3298535399999998,36.8630918,street_side,unknown,,24/7,public
+1550657967,Unnamed Parking,-1.3306382142857145,36.86226122857143,street_side,unknown,,24/7,public
+1550657968,Unnamed Parking,-1.33045554,36.86269265999999,street_side,unknown,,24/7,public
+1550660256,Unnamed Parking,-1.3308001399999998,36.86040696,street_side,unknown,,24/7,public
+1550660257,Unnamed Parking,-1.3305420499999998,36.86000726666666,surface,unknown,,24/7,public
+1550660258,Unnamed Parking,-1.3306897599999998,36.860700480000006,street_side,unknown,,24/7,public
+1550660259,Unnamed Parking,-1.3297149000000001,36.86055572,surface,unknown,,24/7,public
+6208217293,Kobil Parking,-1.3282874,36.8915057,surface,unknown,,24/7,public
+12886546503,Krona Park,-1.3355121,36.8918797,surface,unknown,,24/7,public
+369097325,Unnamed Parking,-1.32724011,36.873798150000006,surface,unknown,,24/7,public
+1547764674,Unnamed Parking,-1.3271075800000003,36.87083512,street_side,unknown,,24/7,public
+1547764675,Unnamed Parking,-1.3271152,36.87095924285713,street_side,unknown,,24/7,public
+1547764676,Unnamed Parking,-1.3286431,36.870718350000004,street_side,unknown,,24/7,public
+1547764677,Unnamed Parking,-1.328900327272727,36.87061672727272,street_side,unknown,,24/7,public
+1547764678,Unnamed Parking,-1.3260074764705883,36.871218276470586,surface,unknown,,24/7,public
+1547764679,Unnamed Parking,-1.3260294750000001,36.8722084375,surface,unknown,,24/7,public
+1547764685,Unnamed Parking,-1.3281088714285711,36.87297168571428,surface,unknown,,24/7,public
+1547764686,Unnamed Parking,-1.3286449599999999,36.872237659999996,street_side,unknown,,24/7,public
+1547764687,Unnamed Parking,-1.32870146,36.871934960000004,street_side,unknown,,24/7,public
+1547764688,Unnamed Parking,-1.32883882,36.871955660000005,street_side,unknown,,24/7,public
+1547764689,Unnamed Parking,-1.3289791666666666,36.87149026666666,street_side,unknown,,24/7,public
+1547764690,Unnamed Parking,-1.328992757142857,36.872848028571426,surface,unknown,,24/7,public
+1550660821,Unnamed Parking,-1.32890294,36.870956320000005,street_side,unknown,,24/7,public
+881593877,Unnamed Parking,-1.3074567437499998,36.760097887499995,surface,unknown,,24/7,public
+1548561323,Unnamed Parking,-1.3053176199999998,36.752711160000004,surface,unknown,,24/7,public
+612008431,Olympic Bus Terminus,-1.3126351,36.7778212,surface,unknown,,24/7,public
+612008499,Ayany Car Park,-1.3090339,36.7757579,surface,yes,,24/7,public
+93707185,Unnamed Parking,-1.3038941555555552,36.75428361111111,surface,unknown,,24/7,public
+95792724,Unnamed Parking,-1.2898871555555553,36.756677877777776,surface,unknown,,24/7,public
+247896462,Unnamed Parking,-1.30010348,36.7546992,surface,unknown,,24/7,public
+247896463,Unnamed Parking,-1.3000322600000003,36.75435678000001,surface,unknown,,24/7,public
+247896464,Unnamed Parking,-1.30023292,36.75426922,surface,unknown,,24/7,public
+247896465,Unnamed Parking,-1.30035926,36.75456938000001,surface,unknown,,24/7,public
+345275446,The Junction Mall Parking,-1.2985103600000003,36.76237808,surface,yes,,24/7,public
+345275450,Unnamed Parking,-1.2988039500000002,36.763028283333334,surface,unknown,,24/7,public
+542978092,Junction Parking,-1.298199775,36.7638664375,surface,unknown,,24/7,yes
+834182201,Unnamed Parking,-1.29829534,36.76174424,surface,unknown,,24/7,public
+881601162,Unnamed Parking,-1.30185638,36.7622334,surface,unknown,,24/7,public
+881601163,Unnamed Parking,-1.3010533199999998,36.762207599999996,surface,unknown,,24/7,public
+881601164,Unnamed Parking,-1.30026414,36.76218434,surface,unknown,,24/7,public
+996349646,Unnamed Parking,-1.2975793714285715,36.75636992857143,surface,unknown,,24/7,public
+1147544484,Unnamed Parking,-1.29638415,36.763584200000004,street_side,unknown,,24/7,private
+1147544485,Unnamed Parking,-1.2965419,36.76368969999999,surface,unknown,,24/7,private
+1371631766,Unnamed Parking,-1.2963868105263159,36.75944514736843,surface,unknown,,24/7,public
+1371631773,Unnamed Parking,-1.2967765583333335,36.760073858333335,surface,unknown,,24/7,public
+1371631776,Unnamed Parking,-1.2960719299999999,36.76020311,surface,unknown,,24/7,public
+94987859,Valley Arcade Parking,-1.2902327000000002,36.77010331999999,surface,no,,24/7,customers
+94989506,Unnamed Parking,-1.2963971,36.77885078,surface,unknown,,24/7,public
+95790687,Unnamed Parking,-1.3012703,36.779948985714285,surface,unknown,,24/7,public
+239938280,Impala Club Parking Lot,-1.300811011111111,36.76792724444445,surface,unknown,,24/7,public
+242427750,Unnamed Parking,-1.30296232,36.7739696,surface,unknown,,24/7,private
+513625452,Unnamed Parking,-1.29408102,36.77948098,surface,unknown,,24/7,public
+554861654,Unnamed Parking,-1.2907654375000002,36.76973073749999,surface,unknown,,24/7,public
+660142142,Unnamed Parking,-1.2997723799999998,36.772636399999996,surface,unknown,,24/7,public
+1082024939,Unnamed Parking,-1.2995622727272726,36.76627394545455,surface,unknown,,24/7,public
+202499579,Unnamed Parking,-1.3080794,36.7841216,surface,unknown,,24/7,public
+202499580,Unnamed Parking,-1.3082922333333333,36.78431051666667,surface,unknown,,24/7,public
+2064445778,Highrise Parking,-1.3155335,36.8052222,surface,unknown,,24/7,public
+1004297635,Unnamed Parking,-1.3146620666666669,36.80765412222222,surface,unknown,,24/7,public
+1004297636,Unnamed Parking,-1.3148769599999999,36.806952499999994,surface,unknown,,24/7,public
+1004297637,Unnamed Parking,-1.31443045,36.80711598333333,surface,unknown,,24/7,public
+1144642357,Unnamed Parking,-1.3054785799999997,36.80379722000001,surface,yes,,24/7,customers
+5414335601,Chaka Place Parking Lot,-1.29224,36.7911521,surface,unknown,,24/7,public
+61888007,Unnamed Parking,-1.29975892,36.79075646,surface,yes,,24/7,public
+61888008,Unnamed Parking,-1.300118311111111,36.79119785555556,surface,no,,24/7,customers
+94983819,KAPS Parking Yaya Center,-1.29312792,36.787431420000004,surface,unknown,,24/7,public
+94990207,Unnamed Parking,-1.293199314285714,36.78805131428572,surface,unknown,,24/7,public
+95790445,Unnamed Parking,-1.30023154,36.78722686,surface,unknown,,24/7,public
+95790447,Unnamed Parking,-1.2997258600000001,36.789444939999996,surface,yes,,24/7,public
+251203939,Adams Arcade Parking,-1.3010518857142856,36.780978742857144,surface,unknown,,24/7,public
+387483416,Oil Libya Parking,-1.3000222100000003,36.789969475,surface,no,,24/7,customers
+569218725,Unnamed Parking,-1.2993714600000001,36.790235839999994,surface,yes,,24/7,public
+663448833,Unnamed Parking,-1.2949094300000004,36.78199518,surface,unknown,,24/7,public
+685275621,Unnamed Parking,-1.2924181857142856,36.789456557142856,surface,unknown,,24/7,public
+1058070855,Yaya Centre parking,-1.2925910466666666,36.78766572,multi-storey,unknown,,24/7,public
+1234596653,Unnamed Parking,-1.30133828,36.7925933,surface,unknown,,24/7,public
+1546991610,Unnamed Parking,-1.292762418181818,36.788942736363644,surface,unknown,,24/7,public
+1549023644,Unnamed Parking,-1.3000277,36.7933898,surface,unknown,,24/7,public
+1333669443,Lenana Parking Lot Area,-1.2900918,36.800209,surface,unknown,,24/7,public
+5401775740,Daystar university parking lot,-1.2991941,36.8027448,surface,unknown,,24/7,public
+5401775741,Nairobi Baptist Church Parking,-1.2979916,36.800926,surface,unknown,,24/7,public
+78234233,Nairobi Hospital car park,-1.2956715222222224,36.80572392222222,surface,unknown,,24/7,public
+144060413,Doctors Plaza Parking,-1.29546692,36.8030446,surface,unknown,,24/7,customers
+245262956,Unnamed Parking,-1.3017554399999998,36.8029259,surface,no,,24/7,customers
+297314206,Nairobi Hospital Car Parking,-1.2961730818181818,36.803775245454545,surface,unknown,,24/7,public
+388048807,KNH Visitors' Parking,-1.3017342,36.80834731666666,surface,no,,24/7,public
+558314863,Unnamed Parking,-1.2905845285714288,36.80973778571428,surface,unknown,,24/7,public
+558314876,KNH Parking,-1.2992720333333336,36.805265588888886,surface,unknown,,24/7,public
+561740959,Telkom Plaza Parking,-1.2902744899999998,36.8060048,surface,unknown,,24/7,public
+859412316,Unnamed Parking,-1.2929199111111112,36.80015977777778,surface,unknown,,24/7,public
+1004235752,Unnamed Parking,-1.30154902,36.804455659999995,surface,unknown,,24/7,public
+1004235753,Unnamed Parking,-1.2999909727272727,36.80448307272727,surface,unknown,,24/7,public
+1004236610,KMTC Parking Yard,-1.2990386142857144,36.80439852857143,surface,unknown,,24/7,public
+1061760618,Unnamed Parking,-1.29423584,36.80989383333333,surface,unknown,,24/7,public
+1239066559,Unnamed Parking,-1.2983483,36.802261439999995,street_side,unknown,,24/7,public
+1239066560,Unnamed Parking,-1.2982388142857142,36.802291585714286,street_side,unknown,,24/7,public
+1239349236,Unnamed Parking,-1.3017877,36.80416702,surface,unknown,,24/7,public
+1549023645,Unnamed Parking,-1.2985377555555557,36.795995077777775,surface,unknown,,24/7,public
+1549023646,Unnamed Parking,-1.2985190285714285,36.79627308571429,surface,unknown,,24/7,public
+1549023647,Unnamed Parking,-1.2985036714285716,36.796506428571426,surface,unknown,,24/7,public
+1549025709,Unnamed Parking,-1.2987757166666667,36.807620316666664,surface,unknown,,24/7,public
+1549025710,Unnamed Parking,-1.2993043142857144,36.808499485714286,surface,unknown,,24/7,public
+144112321,Strathmore Unviersity Phase II Parking Lot,-1.30995282,36.813705600000006,surface,unknown,,24/7,public
+332240213,Unnamed Parking,-1.3129875363636363,36.81624425454545,surface,unknown,,24/7,public
+332240214,Unnamed Parking,-1.3124009454545453,36.81660913636364,surface,unknown,,24/7,public
+563448741,Unnamed Parking,-1.31645454,36.81458076,surface,yes,,24/7,public
+1004221454,Unnamed Parking,-1.3186096769230768,36.818020684615384,surface,unknown,,24/7,public
+1004334863,Unnamed Parking,-1.30872688,36.81288016,surface,unknown,,24/7,public
+1004334864,Unnamed Parking,-1.3097225857142856,36.812379085714284,surface,unknown,,24/7,public
+1004334865,Unnamed Parking,-1.3110397,36.81488215,surface,unknown,,24/7,public
+1004334866,Unnamed Parking,-1.31072082,36.815223100000004,surface,unknown,,24/7,public
+1004334867,Unnamed Parking,-1.3103369625,36.814090025,surface,unknown,,24/7,public
+1453530799,Capital Centre Parking Lot,-1.316037,36.8340919,surface,yes,600,24/7,customers
+2145313586,Vumira House Parking Lot,-1.3112488,36.8355363,surface,unknown,,24/7,public
+2145316657,Oddyssey Plaza Parking Lot,-1.3108493,36.8360701,surface,unknown,,24/7,public
+5431210796,Unnamed Parking,-1.3185241,36.8261674,surface,unknown,,24/7,public
+5431226371,Unnamed Parking,-1.3183048,36.829942,surface,unknown,,24/7,public
+95636614,Unnamed Parking,-1.3164106937499997,36.8343584875,surface,unknown,,24/7,customers
+364982321,Unnamed Parking,-1.31884862,36.83573452,surface,unknown,,24/7,public
+382256363,Supa's Garage,-1.306461508333333,36.83415405833333,street_side,unknown,,24/7,public
+972912982,Unnamed Parking,-1.31058374,36.83929144,surface,unknown,,24/7,public
+972912983,Unnamed Parking,-1.3106473600000002,36.83942994,surface,unknown,,24/7,public
+972912984,Unnamed Parking,-1.31065844,36.839501940000005,surface,unknown,,24/7,public
+972912985,Unnamed Parking,-1.31067286,36.83960879999999,surface,unknown,,24/7,public
+972912986,Unnamed Parking,-1.31068724,36.839688020000004,surface,unknown,,24/7,public
+1004336473,Unnamed Parking,-1.3079727888888888,36.83561884444445,surface,unknown,,24/7,public
+1004336474,Unnamed Parking,-1.30709796,36.83481728,street_side,unknown,,24/7,public
+1004336475,Unnamed Parking,-1.3070281142857143,36.833702114285714,street_side,unknown,,24/7,public
+1550083504,Unnamed Parking,-1.3071777,36.83468266,street_side,unknown,,24/7,public
+1550329426,Unnamed Parking,-1.3048628571428573,36.83006231428572,surface,unknown,,24/7,public
+1550329428,Unnamed Parking,-1.3053007600000002,36.839286720000004,street_side,unknown,,24/7,public
+1550329429,Unnamed Parking,-1.3053862999999999,36.83934372,street_side,unknown,,24/7,public
+1550329430,Unnamed Parking,-1.3052107200000003,36.83910741999999,street_side,unknown,,24/7,public
+1392346394,Unnamed Parking,-1.2944773,36.8101427,surface,unknown,,24/7,public
+5378425144,Equity Centre Car Park,-1.3015834,36.8121121,surface,unknown,,24/7,public
+5383782003,Engineers Board of Kenya,-1.2918266,36.8125679,street_side,unknown,,24/7,public
+5383782004,Ministry Of Lands Parking Lot,-1.2924766,36.8116836,surface,unknown,,24/7,public
+9485502152,Mara Road Car Park,-1.2992278,36.8109977,surface,unknown,,24/7,yes
+9488826516,Geomaps- AFA Parking,-1.3037392,36.8139743,surface,unknown,,24/7,public
+9754714125,Unnamed Parking,-1.2937997,36.8137573,surface,unknown,,24/7,public
+123617551,NSSF Parking Lot,-1.290132457142857,36.812714414285715,multi-storey,unknown,,24/7,public
+167271476,Unnamed Parking,-1.3004840375000002,36.814754956250006,multi-storey,unknown,,24/7,public
+241570710,Unnamed Parking,-1.29261512,36.81893168,surface,unknown,,24/7,public
+241571137,Ministry of Health Parking,-1.29096545,36.81459958333334,surface,unknown,,24/7,public
+245264053,Don Bosco Church Parking,-1.3019738,36.82041488,surface,unknown,,24/7,public
+435091328,Unnamed Parking,-1.2941329833333335,36.81751598333333,surface,unknown,,24/7,public
+532822660,Cooperative parking lot,-1.29409236,36.81235758,surface,yes,,24/7,customers
+557016947,Nyayo Stadium Parking Lot,-1.3026975294117646,36.824601423529415,surface,unknown,,24/7,public
+557726171,Judiciary Parking Lot,-1.2941718142857144,36.813967257142856,surface,unknown,,24/7,public
+557726172,Leopard Beach Resort Parking Lot,-1.293304076923077,36.81588594615385,surface,unknown,,24/7,public
+687439510,Unnamed Parking,-1.2919853571428572,36.82085308571429,surface,unknown,,24/7,public
+860348936,Unnamed Parking,-1.292713043478261,36.815452686956526,surface,unknown,,24/7,public
+995566500,Unnamed Parking,-1.3006400333333332,36.819801633333334,surface,unknown,,24/7,public
+1028879834,Mara Road Car Park,-1.2993359999999998,36.81106568,surface,unknown,,24/7,yes
+1029216659,Geomaps- AFA Parking,-1.3036821,36.81395963999999,surface,unknown,,24/7,public
+1061753490,Unnamed Parking,-1.2936572999999998,36.81346215714285,surface,unknown,,24/7,public
+1061753907,Unnamed Parking,-1.2936608800000002,36.81386807,surface,unknown,,24/7,public
+1061759679,Unnamed Parking,-1.2942980444444445,36.81070404444445,surface,unknown,,24/7,public
+1061769499,Unnamed Parking,-1.2937992555555555,36.81049796666667,surface,unknown,,24/7,public
+1061773478,Unnamed Parking,-1.2938286933333336,36.812204673333326,surface,unknown,,24/7,public
+1189977529,Unnamed Parking,-1.290090425,36.82395518333334,multi-storey,unknown,,24/7,public
+1189977534,Unnamed Parking,-1.2898031333333333,36.82362813333333,surface,unknown,,24/7,public
+1189979678,Old Mutual Tower,-1.2992806680000002,36.819470960000004,multi-storey,unknown,,24/7,public
+1412128799,Unnamed Parking,-1.30045552,36.81276458,street_side,unknown,,24/7,public
+1412128800,Unnamed Parking,-1.29960762,36.81295018,street_side,unknown,,24/7,public
+1412128812,Unnamed Parking,-1.3003343,36.81317965454545,multi-storey,unknown,,24/7,public
+1547706891,Unnamed Parking,-1.29047958,36.81965914,street_side,unknown,,24/7,public
+1547706892,Unnamed Parking,-1.29031122,36.8205133,street_side,unknown,,24/7,public
+1547706894,Unnamed Parking,-1.2901461166666666,36.82060346666666,street_side,unknown,,24/7,public
+1547706897,Unnamed Parking,-1.29016996,36.8207088,street_sideQ3295867,unknown,,24/7,public
+1547762849,Unnamed Parking,-1.3021613500000002,36.82541956666667,street_side,unknown,,24/7,public
+1550078330,Unnamed Parking,-1.2973957600000001,36.81285938,surface,unknown,,24/7,public
+1550082489,Unnamed Parking,-1.29000664,36.82072646,street_side,unknown,,24/7,public
+30498595,Unnamed Parking,-1.2909796,36.8282672,surface,unknown,,24/7,public
+2324373844,Unnamed Parking,-1.2953986,36.8375275,surface,unknown,,24/7,public
+123269047,Unnamed Parking,-1.29104244,36.8284273,surface,unknown,,24/7,public
+125300907,Unnamed Parking,-1.29029048,36.82648322,surface,unknown,,24/7,public
+125300908,Unnamed Parking,-1.29118805,36.828143275,surface,unknown,,24/7,public
+132956809,Unnamed Parking,-1.29044312,36.83713522,surface,unknown,,24/7,public
+132956833,Unnamed Parking,-1.2919049,36.83764638,surface,unknown,,24/7,public
+133146037,Dt Dobie Parking,-1.2978282200000002,36.83607628,surface,unknown,,24/7,public
+133157623,Unnamed Parking,-1.3014642625000001,36.8317679,surface,unknown,,24/7,public
+133157649,Unnamed Parking,-1.2998588,36.83301485263158,surface,unknown,,24/7,public
+283725047,Unnamed Parking,-1.2898490428571427,36.828945757142854,surface,unknown,,24/7,public
+401972799,Technical University Of Kenya Parking Lot,-1.2917525888888888,36.825220511111105,surface,no,,24/7,yes
+687438546,Unnamed Parking,-1.29133254,36.82593606,surface,unknown,,24/7,public
+688412717,Unnamed Parking,-1.29101342,36.83761908,surface,unknown,,24/7,public
+689149735,Unnamed Parking,-1.3042389307692308,36.83029943076922,surface,unknown,,24/7,public
+1547762850,Unnamed Parking,-1.3027762,36.826226600000005,surface,unknown,,24/7,public
+1547762851,Unnamed Parking,-1.30313006,36.82642628,surface,unknown,,24/7,public
+1547762852,Unnamed Parking,-1.3037396857142858,36.8265401,surface,unknown,,24/7,public
+1547762853,Unnamed Parking,-1.304248642857143,36.827013414285716,surface,unknown,,24/7,public
+1550082494,Unnamed Parking,-1.29010154,36.8265125,street_side,unknown,,24/7,public
+1550082496,Unnamed Parking,-1.2899900599999998,36.82733304,street_side,unknown,,24/7,public
+1550082497,Unnamed Parking,-1.2905499599999999,36.82738002000001,street_side,unknown,,24/7,public
+1550082498,Unnamed Parking,-1.2906777200000001,36.82753246000001,street_side,unknown,,24/7,public
+1550082499,Unnamed Parking,-1.2908503857142857,36.827337514285716,street_side,unknown,,24/7,public
+1550082500,Unnamed Parking,-1.29121682,36.82766384,street_side,unknown,,24/7,public
+1550293884,Unnamed Parking,-1.2985354111111111,36.82591672222222,surface,unknown,,24/7,public
+1550329422,Unnamed Parking,-1.30342744,36.829825140000004,street_side,unknown,,24/7,public
+1550329423,Unnamed Parking,-1.3028926,36.830881219999995,street_side,unknown,,24/7,public
+1550329424,Unnamed Parking,-1.3033880999999998,36.830216060000005,street_side,unknown,,24/7,public
+1550329425,Unnamed Parking,-1.3044357199999999,36.83082954,surface,unknown,,24/7,public
+364997373,Unnamed Parking,-1.31803466,36.855037419999995,surface,unknown,,24/7,private
+688411407,Unnamed Parking,-1.30615568,36.84909378,surface,unknown,,24/7,public
+153567478,Unnamed Parking,-1.3136339333333333,36.85721915,surface,unknown,,24/7,public
+364994364,Unnamed Parking,-1.3184430142857142,36.8556965,surface,unknown,,24/7,private
+364995017,Unnamed Parking,-1.31860864,36.85628718,surface,unknown,,24/7,private
+995026217,Unnamed Parking,-1.3086068000000002,36.866734980000004,surface,unknown,,24/7,public
+132161405,Unnamed Parking,-1.2950870857142858,36.85076631428571,surface,unknown,,24/7,public
+132161406,Unnamed Parking,-1.2944853,36.8504688,surface,unknown,,24/7,public
+881457077,Unnamed Parking,-1.29813194,36.8700044,surface,unknown,,24/7,public
+1552250767,Unnamed Parking,-1.2945845599999999,36.875854520000004,street_side,unknown,,24/7,public
+1552250768,Unnamed Parking,-1.2944829800000002,36.87583522,street_side,unknown,,24/7,public
+1552250769,Unnamed Parking,-1.2949693,36.87588406,surface,unknown,,24/7,public
+260915501,Unnamed Parking,-1.2970129375,36.8948278125,surface,unknown,50,24/7,permissive
+369123224,Unnamed Parking,-1.2889045,36.756697599999995,surface,unknown,,24/7,public
+1052985244,Unnamed Parking,-1.2878827857142856,36.76235979285714,surface,unknown,,24/7,public
+77869529,Lavington Mall,-1.2798946636363633,36.770148445454545,street_side,yes,,24/7,customers
+95792156,Holy Trinity Catholic Church Car Park,-1.2823207583333334,36.78028015833333,surface,unknown,,24/7,public
+226322141,Unnamed Parking,-1.28422934,36.765561579999996,surface,unknown,,24/7,public
+424089101,Unnamed Parking,-1.2771726600000002,36.76891972800001,surface,yes,,24/7,yes
+1052964218,Unnamed Parking,-1.28373976,36.76944412,surface,unknown,,24/7,private
+1053042709,Unnamed Parking,-1.28146646,36.76905008,surface,no,,24/7,customers
+1054762876,Unnamed Parking,-1.2803955,36.769772,street_side,unknown,,24/7,public
+1106135635,Unnamed Parking,-1.2866712142857144,36.76616414285714,surface,yes,,24/7,private
+1106135636,Unnamed Parking,-1.2871137428571429,36.76658284285714,surface,unknown,,24/7,private
+1550276794,Unnamed Parking,-1.2826235400000001,36.766746760000004,street_side,unknown,,24/7,public
+1550276796,Unnamed Parking,-1.2828475400000001,36.7664842,street_side,unknown,,24/7,public
+1550276797,Unnamed Parking,-1.2805922285714286,36.76956861428571,surface,unknown,,24/7,public
+1550276798,Unnamed Parking,-1.2801187600000001,36.769609020000004,street_side,unknown,,24/7,public
+1550276799,Unnamed Parking,-1.27982164,36.770314459999994,street_side,unknown,,24/7,public
+1550276800,Unnamed Parking,-1.27893744,36.7705656,street_side,unknown,,24/7,public
+1550276801,Unnamed Parking,-1.2791222800000002,36.77045296,street_side,unknown,,24/7,public
+1550276802,Unnamed Parking,-1.27876712,36.770686780000005,street_side,unknown,,24/7,public
+1550276803,Unnamed Parking,-1.27870822,36.77071952,street_side,unknown,,24/7,public
+1550276804,Unnamed Parking,-1.27888172,36.77073638,street_side,unknown,,24/7,public
+1550276805,Unnamed Parking,-1.2791291833333334,36.77025191666666,surface,unknown,,24/7,public
+552377741,Unnamed Parking,-1.2707667444444446,36.77747698888888,surface,unknown,,24/7,public
+1211947927,Unnamed Parking,-1.271327857142857,36.77845747142857,surface,unknown,,24/7,public
+968588012,Kenton Rear Parking,-1.2809847,36.7869545,surface,unknown,,24/7,public
+247773424,Kenton Main Parking,-1.2788140399999999,36.78855546,surface,unknown,,24/7,public
+440010966,Unnamed Parking,-1.2854513,36.789972520000006,surface,unknown,,24/7,public
+440010967,Unnamed Parking,-1.28569602,36.78985628,surface,unknown,,24/7,public
+566687891,Jumuia Parking Lot,-1.28912478,36.79330644,underground,unknown,,24/7,public
+595908532,Unnamed Parking,-1.2887787666666668,36.789759588888884,surface,unknown,,24/7,public
+598606250,Unnamed Parking,-1.2894357777777778,36.78769844999999,surface,unknown,,24/7,public
+1017651874,Unnamed Parking,-1.2884836600000003,36.78975176,surface,unknown,,24/7,public
+1550749752,Unnamed Parking,-1.2859860399999998,36.79111092000001,street_side,unknown,,24/7,public
+248992215,Mamlaka car park,-1.28022666,36.8100408,surface,unknown,,24/7,yes
+254814024,Better Living Hospital Car Park,-1.28905832,36.8082129,surface,unknown,,24/7,public
+254814025,LMS Guest House Car Park,-1.2888588200000002,36.808367579999995,surface,unknown,,24/7,public
+254814026,Nairobi Central SDA Church - Maxwell Car Park,-1.2890955000000002,36.807767420000005,surface,unknown,,24/7,public
+254814027,Unnamed Parking,-1.2878657199999999,36.80773372,surface,unknown,,24/7,public
+512302705,IFRC car parking space,-1.2883874,36.79854128,surface,unknown,,24/7,private
+512312764,IFRC employee car parking,-1.28867346,36.79846497999999,surface,unknown,,24/7,private
+613458329,Unnamed Parking,-1.27857728,36.80313104,surface,unknown,,24/7,public
+859412315,Unnamed Parking,-1.2888833,36.79669052,surface,unknown,,24/7,public
+95791246,Unnamed Parking,-1.2666476599999998,36.785528600000006,surface,unknown,,24/7,public
+564775721,All Africa Conference of Churches Car Park,-1.2604440357142856,36.7874971,surface,unknown,,24/7,public
+1053261122,Unnamed Parking,-1.2746415500000001,36.781449699999996,surface,unknown,,24/7,public
+1430821175,Unnamed Parking,-1.2725389200000001,36.79276602,surface,unknown,,24/7,public
+1430821176,Unnamed Parking,-1.27282662,36.792513099999994,surface,unknown,,24/7,public
+930204024,Student parking,-1.274479,36.805643,surface,unknown,,24/7,public
+2519756646,Unnamed Parking,-1.2743448,36.8051067,surface,unknown,,24/7,public
+2519818247,Unnamed Parking,-1.2731723,36.805157,surface,unknown,,24/7,public
+6127848123,Sankara Hotel Car Park,-1.2622751,36.8027813,surface,yes,,24/7,customers
+6171020686,Westlands Commercial Centre Car Park,-1.260429,36.8038372,surface,yes,,24/7,yes
+56052349,Southern Sun Mayfair,-1.2628710666666667,36.80705643333334,surface,unknown,,24/7,public
+80342068,Unnamed Parking,-1.2714589,36.80691708333333,surface,unknown,,24/7,public
+80342108,Unnamed Parking,-1.27288654,36.8067967,surface,unknown,,24/7,public
+80342423,Unnamed Parking,-1.2733892555555557,36.80467163333333,surface,unknown,,24/7,public
+80345483,Unnamed Parking,-1.27359984,36.806705980000004,surface,unknown,,24/7,public
+80345486,Unnamed Parking,-1.2742595857142855,36.80748811428572,surface,unknown,,24/7,public
+80345492,Unnamed Parking,-1.27373585,36.8058246,surface,unknown,,24/7,public
+80497196,Unnamed Parking,-1.2717048166666667,36.80376080833333,surface,unknown,,24/7,public
+238856245,Unnamed Parking,-1.26063376,36.7964857,surface,unknown,,24/7,public
+239007380,Consolata Shrine Parking,-1.2669648399999998,36.80332954,surface,unknown,,24/7,public
+242428164,Unnamed Parking,-1.2650880499999997,36.79968476250001,surface,unknown,,24/7,public
+248897159,Unnamed Parking,-1.2614604,36.7963655,surface,unknown,,24/7,private
+512903706,Sarit New Parking,-1.2612072714285711,36.80070462857143,surface,unknown,,24/7,public
+576016273,Victoria Court Parking,-1.26296794,36.80616916,surface,unknown,,24/7,public
+576018088,Eden Square Parking,-1.2683985285714283,36.806495042857144,surface,unknown,,24/7,public
+577395626,Standard Chartered Bank Parking,-1.2634164399999999,36.80200734,surface,unknown,,24/7,customers
+577395627,Westlands Square Parking,-1.26402586,36.80239424,surface,yes,,24/7,public
+577395628,Westlands Square Parking,-1.2636700846153845,36.80218158461538,surface,yes,,24/7,yes
+581330829,Mpaka House Parking,-1.2649751200000001,36.804210319999996,surface,unknown,,24/7,customers
+581330832,Sclaters House Car Parking,-1.2635820799999997,36.808897390000006,surface,no,,24/7,customers
+647573869,Unnamed Parking,-1.2598876,36.80406311428572,surface,unknown,,24/7,public
+1205972611,Unnamed Parking,-1.2677449600000001,36.7999258,surface,unknown,30,24/7,private
+1314218509,Unnamed Parking,-1.2641382666666667,36.800986349999995,surface,unknown,,24/7,customers
+1378964326,Unnamed Parking,-1.2677195714285714,36.80858242857143,surface,unknown,,24/7,public
+30121680,Unnamed Parking,-1.2896057,36.8150615,surface,unknown,,24/7,public
+30695694,Unnamed Parking,-1.2856445,36.8132893,surface,unknown,,24/7,public
+498412528,InterContinental Hotel Car Park,-1.2873717,36.8192911,surface,unknown,,24/7,public
+1175376518,Travel House Parking,-1.2861727,36.8214386,multi-storey,yes,,24/7,public
+1418962726,Parking B,-1.2806414,36.8128716,surface,unknown,,24/7,public
+1418962730,MAIN PACKING,-1.2803274,36.8127162,surface,unknown,,24/7,public
+1420033889,YMCA STAFF PARKING,-1.2805756,36.8129968,surface,unknown,,24/7,public
+2324373804,Jogoo House Car Park,-1.288426,36.824186,surface,unknown,,24/7,public
+2519803985,Unnamed Parking,-1.2794317,36.8103813,surface,unknown,,24/7,public
+5555073964,Donald Car Park,-1.2873973,36.8183799,surface,unknown,,24/7,public
+10767847055,Unnamed Parking,-1.2852863,36.8131296,surface,unknown,,24/7,public
+79594658,Unnamed Parking,-1.2806898652173913,36.816219700000005,surface,unknown,,24/7,public
+113187440,Unnamed Parking,-1.28315538,36.81666122,surface,unknown,,24/7,public
+125296284,Judiciary Car Park,-1.28733056,36.823670799999995,surface,unknown,,24/7,public
+125296285,KenCom CarPark,-1.2864514999999999,36.82436546,surface,unknown,200,24/7,public
+125298626,Taifa Road Parking B,-1.2878399999999997,36.825023099999996,surface,unknown,,24/7,public
+125687154,Unnamed Parking,-1.2790056250000001,36.814608050000004,surface,unknown,,24/7,public
+125687155,Unnamed Parking,-1.278823675,36.81518821875,surface,unknown,,24/7,public
+126903895,Green Belt Car Bazzar,-1.278466427586207,36.82321467586207,surface,yes,,24/7,public
+128508147,Parking C,-1.27983258,36.813538179999995,surface,unknown,,24/7,public
+239143186,KAPS Parking Holy Family Basilica,-1.2874739000000002,36.820013599999996,underground,yes,400,24/7,public
+239939682,Unnamed Parking,-1.27903948,36.818420020000005,surface,unknown,,24/7,public
+241193404,K.I.C.C Car Park,-1.2884295285714287,36.82081866428572,surface,unknown,,24/7,public
+246935363,Unnamed Parking,-1.2856329166666667,36.81760671666667,surface,unknown,,24/7,public
+247828980,Unnamed Parking,-1.2817365333333335,36.81298493333333,surface,unknown,,24/7,public
+248992300,ADD car park,-1.2810208125,36.811790224999996,surface,unknown,,24/7,yes
+248992782,ADD parking,-1.2807589833333333,36.81221738333334,surface,unknown,,24/7,public
+248994452,Car park,-1.2776576,36.81164896,surface,unknown,,24/7,yes
+248994836,Unnamed Parking,-1.2780426999999999,36.81201245999999,street_side,unknown,,24/7,public
+248995504,Unnamed Parking,-1.27832178,36.81225504,street_side,unknown,,24/7,public
+370307145,Unnamed Parking,-1.2864428142857143,36.8109421,surface,unknown,,24/7,public
+398460912,Unnamed Parking,-1.2825982799999998,36.81391499,surface,unknown,,24/7,public
+554019570,Unnamed Parking,-1.275656642857143,36.82464555714286,surface,unknown,,24/7,public
+572087318,Kirinyaga Road Car Parking,-1.27925385,36.82219336666667,surface,unknown,,24/7,yes
+579848505,City Market Car Park,-1.2839022999999998,36.81906752,surface,yes,,24/7,yes
+664046292,City Hall Annexe Parking,-1.2863576399999999,36.820903959999995,surface,unknown,,24/7,public
+686183956,Unnamed Parking,-1.2836733,36.8165073,surface,unknown,,24/7,public
+687434849,Unnamed Parking,-1.2873432833333334,36.82349703333333,surface,unknown,,24/7,public
+696914132,Unnamed Parking,-1.280696811111111,36.81788815555555,street_side,unknown,,24/7,customers
+697927358,Unnamed Parking,-1.2840545199999998,36.81984788,surface,unknown,,24/7,public
+697943916,Unnamed Parking,-1.2866587833333332,36.820793316666666,surface,unknown,,24/7,public
+699886064,Unnamed Parking,-1.28201602,36.817218659999995,surface,unknown,,24/7,public
+860344832,Unnamed Parking,-1.2872665000000003,36.81071685555555,surface,unknown,,24/7,public
+860344834,Unnamed Parking,-1.2877980666666669,36.812129309523804,surface,unknown,,24/7,public
+1150961570,Unnamed Parking,-1.2852551599999997,36.820874499999995,surface,unknown,,24/7,public
+1157846328,Unnamed Parking,-1.2854409818181818,36.81322495454546,surface,unknown,,24/7,public
+1157846329,Unnamed Parking,-1.2861337625000002,36.81315405,surface,unknown,,24/7,public
+1475486402,Unnamed Parking,-1.282331211111111,36.81698324444445,street_side,unknown,,24/7,public
+1475486403,Unnamed Parking,-1.28214632,36.816862879999995,street_side,unknown,,24/7,public
+1544848858,Unnamed Parking,-1.275489,36.813523775,surface,unknown,,24/7,public
+1548270241,Unnamed Parking,-1.2806762111111114,36.817940444444446,street_side,unknown,,24/7,customers
+1548542855,Unnamed Parking,-1.28395983,36.81733237,surface,unknown,,24/7,public
+1548948006,Unnamed Parking,-1.2883907,36.824107819999995,surface,unknown,,24/7,public
+1549267516,Unnamed Parking,-1.28942662,36.8235662,street_side,unknown,,24/7,public
+1549267525,Unnamed Parking,-1.28694306,36.82271592000001,street_side,unknown,,24/7,public
+1549267526,Unnamed Parking,-1.28703572,36.82276956,street_side,unknown,,24/7,public
+1549273027,Unnamed Parking,-1.2895380600000002,36.8217376,street_side,unknown,,24/7,public
+1549273028,Unnamed Parking,-1.28947968,36.82169202,street_side,unknown,,24/7,public
+1549273029,Unnamed Parking,-1.2893741200000002,36.821697719999996,street_side,unknown,,24/7,public
+1549274244,Laico Regency parking,-1.2847249142857142,36.817003128571436,surface,unknown,,24/7,public
+1549741562,Unnamed Parking,-1.2832199599999998,36.82398662,surface,unknown,,24/7,public
+1550834787,Unnamed Parking,-1.28857378,36.82270528,street_side,unknown,,24/7,public
+1550834788,Unnamed Parking,-1.28852902,36.82268466000001,street_side,unknown,,24/7,public
+2324373805,Unnamed Parking,-1.2884696,36.8273088,surface,unknown,,24/7,public
+2324373806,Unnamed Parking,-1.2885551,36.8270327,surface,unknown,,24/7,public
+2324373808,Unnamed Parking,-1.2893101,36.8254079,surface,unknown,,24/7,public
+50128543,Unnamed Parking,-1.27752888,36.83486868,surface,unknown,,24/7,public
+88389016,Unnamed Parking,-1.2852923200000002,36.82604096,surface,unknown,,24/7,public
+125299165,Unnamed Parking,-1.2873763,36.82930053333333,surface,unknown,,24/7,public
+125645305,Unnamed Parking,-1.2822205000000002,36.832611263636366,surface,unknown,,24/7,public
+128062279,Unnamed Parking,-1.2754485857142857,36.8374831,surface,unknown,,24/7,public
+283725048,Athi River/Kitengela Bus Stage,-1.28917834,36.828061680000005,surface,unknown,,24/7,public
+686079976,Unnamed Parking,-1.28405725,36.83999361666666,surface,unknown,,24/7,public
+687440901,Unnamed Parking,-1.2814994,36.8310291,surface,unknown,,24/7,public
+687468463,Unnamed Parking,-1.28956426,36.82645866,street_side,unknown,,24/7,public
+1547874385,Unnamed Parking,-1.289198242857143,36.825389071428575,surface,unknown,,24/7,public
+1547874388,Unnamed Parking,-1.2898537600000002,36.82588194,street_side,unknown,,24/7,public
+1547874389,Unnamed Parking,-1.2885612800000001,36.82697372,street_side,unknown,,24/7,public
+1547874390,Unnamed Parking,-1.28853536,36.827079100000006,street_side,unknown,,24/7,public
+1547874391,Unnamed Parking,-1.2871823199999999,36.82639210000001,street_side,unknown,,24/7,public
+1547916315,Unnamed Parking,-1.2855989333333333,36.829403916666664,surface,unknown,,24/7,public
+1548802455,Unnamed Parking,-1.2892547,36.8267632,street_side,unknown,,24/7,public
+1550082495,Unnamed Parking,-1.2899204000000002,36.82708,street_side,unknown,,24/7,public
+390312470,Unnamed Parking,-1.2641049,36.8117123,surface,unknown,,24/7,public
+3803380459,Museums Parking,-1.2730341,36.8156414,surface,unknown,,24/7,public
+95122003,Unnamed Parking,-1.2737726,36.81396324,surface,unknown,,24/7,public
+95122015,Unnamed Parking,-1.2733393444444443,36.81564351111111,surface,unknown,,24/7,public
+95122020,Unnamed Parking,-1.2747459,36.815864379999994,surface,unknown,,24/7,public
+128998888,Unnamed Parking,-1.2709160714285714,36.82511922857143,surface,unknown,,24/7,public
+133548138,Unnamed Parking,-1.2685398374999999,36.81746587499999,surface,unknown,,24/7,public
+133548151,Dean and Lecturers Parking Lot,-1.2688812200000001,36.81801148,street_side,unknown,,24/7,public
+244391409,Aga Khan University Hospital Parking,-1.2612043714285712,36.8252706,surface,yes,500,24/7,permissive
+553296216,Unnamed Parking,-1.27206274,36.817954639999996,surface,unknown,,24/7,public
+563457466,Unnamed Parking,-1.27306668,36.8117173,surface,unknown,,24/7,public
+698527618,Unnamed Parking,-1.267665833333333,36.82306806666666,surface,unknown,,24/7,public
+698896205,Unnamed Parking,-1.2681167166666665,36.822647133333334,surface,unknown,,24/7,public
+1005230664,Unnamed Parking,-1.2622398,36.82473911,surface,unknown,,24/7,public
+1005230665,Unnamed Parking,-1.2617200875,36.822608925000004,surface,unknown,,24/7,public
+1315363160,Unnamed Parking,-1.273323323076923,36.814218915384615,surface,unknown,,24/7,public
+1548810595,Unnamed Parking,-1.2673425799999998,36.817298300000004,street_side,unknown,,24/7,public
+1548810596,Unnamed Parking,-1.26744664,36.81752286,street_side,unknown,,24/7,public
+1548810597,Unnamed Parking,-1.26754678,36.817271059999996,street_side,unknown,,24/7,public
+1548810599,Unnamed Parking,-1.2672168166666669,36.81671225,surface,unknown,,24/7,public
+1548810600,Unnamed Parking,-1.26692416,36.81690834,street_side,unknown,,24/7,public
+6223194881,Oil Libya Plaza Parking,-1.2615373,36.8396949,surface,yes,,24/7,public
+128995078,Unnamed Parking,-1.2717162375,36.826842981249996,surface,unknown,,24/7,public
+128996199,Unnamed Parking,-1.2689918,36.82660486666666,surface,unknown,,24/7,public
+128998864,Kenya Institute of Curriculum Development,-1.27136366,36.827563440000006,surface,unknown,,24/7,public
+128998874,Unnamed Parking,-1.2707564,36.825855,surface,unknown,,24/7,public
+128998886,Unnamed Parking,-1.2714999,36.827846685714285,surface,unknown,,24/7,public
+130042329,Unnamed Parking,-1.2672283500000001,36.8373274125,surface,unknown,,24/7,public
+244391069,City Park Stadium Parking Lot,-1.261745242857143,36.82597055714285,surface,unknown,,24/7,public
+431113688,Guru Nanak Hospital,-1.2696489,36.8320546375,surface,unknown,,24/7,public
+555080221,"Sikh Temple,Pangani",-1.26866385,36.833683300000004,surface,unknown,,24/7,public
+1279613654,Unnamed Parking,-1.2603634583333332,36.826800750000004,surface,unknown,,24/7,public
+126341539,Lorry Park,-1.2804014750000001,36.84423756666667,surface,unknown,,24/7,public
+131484129,Unnamed Parking,-1.2780318166666667,36.8488381,surface,unknown,,24/7,public
