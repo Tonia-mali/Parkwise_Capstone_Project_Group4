@@ -2,6 +2,12 @@
 ParkWise Nairobi — FastAPI Backend (no-pandas version)
 Reads CSVs with the standard library csv module.
 Works on any Python version including 3.14.
+
+Database layer (PostgreSQL on Render):
+  - database.py  →  DatabasePool class (asyncpg connection pool)
+  - endpoints.py →  DB-backed routes: /facilities, /demand-predictions,
+                    /cnn-counts, /users
+  Existing CSV-backed endpoints are unchanged.
 """
 
 import csv
@@ -12,6 +18,7 @@ import joblib
 import time
 import io
 import urllib.request
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -20,15 +27,37 @@ import holidays
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from database import db
+from endpoints import build_router
+
 # ─────────────────────────────────────────────
-# 1. APP + CORS
+# 1. LIFESPAN  (must be defined before FastAPI())
+# ─────────────────────────────────────────────
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # ── Database pool ────────────────────────────────────────────────────
+    await db.connect()
+    # ── CSV + model loading (runs once on startup) ───────────────────────
+    load_data()
+    yield
+    # ── Shutdown ─────────────────────────────────────────────────────────
+    await db.disconnect()
+
+
+# ─────────────────────────────────────────────
+# 2. APP + CORS
 # ─────────────────────────────────────────────
 
 app = FastAPI(
     title="ParkWise Nairobi API",
     description="Parking demand prediction and smart recommendation for Nairobi CBD",
     version="1.0.0",
+    lifespan=lifespan,
 )
+
+# DB-backed routes: /facilities, /demand-predictions, /cnn-counts, /users
+app.include_router(build_router())
 
 app.add_middleware(
     CORSMiddleware,
@@ -91,7 +120,6 @@ def safe_int(val, default=0):
 # 4. STARTUP — load all models + data
 # ─────────────────────────────────────────────
 
-@app.on_event("startup")
 def load_data():
     global facilities, hourly_curves, ml_model, ml_features, cnn_model
 
@@ -380,6 +408,10 @@ def root():
             "/availability/snapshot",
             "/occupancy/detect",
             "/health",
+            "/facilities",
+            "/demand-predictions/{osm_id}",
+            "/cnn-counts/{osm_id}",
+            "/users",
         ],
     }
 
