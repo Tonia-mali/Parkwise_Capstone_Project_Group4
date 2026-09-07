@@ -1,12 +1,7 @@
 # endpoints.py — ParkWise Nairobi
-# One class per resource. Switched to psycopg2 for Python 3.14 compatibility.
-#
-# In main.py:
-#   from endpoints import build_router
-#   app.include_router(build_router())
+# One class per resource. Uses pg8000 pure Python driver.
 
 from typing import Optional
-import psycopg2.extras
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
@@ -35,6 +30,11 @@ class UserCreate(BaseModel):
     is_guest: bool = False
 
 
+def rows_to_dicts(columns, rows):
+    """Convert pg8000 rows (list of tuples) to list of dicts."""
+    return [dict(zip(columns, row)) for row in rows]
+
+
 # ── Base class ────────────────────────────────────────────────────────────────
 
 class BaseRoutes:
@@ -54,18 +54,20 @@ class FacilityRoutes(BaseRoutes):
 
         @self.router.get("/facilities")
         def list_facilities(conn=Depends(get_db)):
-            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-                cur.execute("SELECT * FROM facilities ORDER BY osm_id")
-                return cur.fetchall()
+            result = conn.run("SELECT * FROM facilities ORDER BY osm_id")
+            cols = [c["name"] for c in conn.columns]
+            return rows_to_dicts(cols, result)
 
         @self.router.get("/facilities/{osm_id}")
         def get_facility(osm_id: int, conn=Depends(get_db)):
-            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-                cur.execute("SELECT * FROM facilities WHERE osm_id = %s", (osm_id,))
-                row = cur.fetchone()
-            if not row:
+            result = conn.run(
+                "SELECT * FROM facilities WHERE osm_id = :osm_id",
+                osm_id=osm_id
+            )
+            if not result:
                 raise HTTPException(status_code=404, detail="Facility not found")
-            return row
+            cols = [c["name"] for c in conn.columns]
+            return rows_to_dicts(cols, result)[0]
 
 
 # ── Demand Predictions ────────────────────────────────────────────────────────
@@ -76,32 +78,28 @@ class PredictionRoutes(BaseRoutes):
 
         @self.router.post("/demand-predictions", status_code=201)
         def create_prediction(payload: DemandPredictionIn, conn=Depends(get_db)):
-            with conn.cursor() as cur:
-                cur.execute(
-                    """
-                    INSERT INTO demand_predictions
-                        (osm_id, hour_of_day, day_of_week, pressure_score, demand_level)
-                    VALUES (%s, %s, %s, %s, %s)
-                    """,
-                    (payload.osm_id, payload.hour_of_day, payload.day_of_week,
-                     payload.pressure_score, payload.demand_level),
-                )
-            conn.commit()
+            conn.run(
+                """INSERT INTO demand_predictions
+                   (osm_id, hour_of_day, day_of_week, pressure_score, demand_level)
+                   VALUES (:osm_id, :hour, :dow, :pressure, :level)""",
+                osm_id=payload.osm_id,
+                hour=payload.hour_of_day,
+                dow=payload.day_of_week,
+                pressure=payload.pressure_score,
+                level=payload.demand_level,
+            )
             return {"status": "ok"}
 
         @self.router.get("/demand-predictions/{osm_id}")
         def get_predictions(osm_id: int, conn=Depends(get_db)):
-            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-                cur.execute(
-                    """
-                    SELECT * FROM demand_predictions
-                    WHERE osm_id = %s
-                    ORDER BY predicted_at DESC
-                    LIMIT 24
-                    """,
-                    (osm_id,),
-                )
-                return cur.fetchall()
+            result = conn.run(
+                """SELECT * FROM demand_predictions
+                   WHERE osm_id = :osm_id
+                   ORDER BY predicted_at DESC LIMIT 24""",
+                osm_id=osm_id,
+            )
+            cols = [c["name"] for c in conn.columns]
+            return rows_to_dicts(cols, result)
 
 
 # ── CNN Counts (stub) ─────────────────────────────────────────────────────────
@@ -127,36 +125,32 @@ class UserRoutes(BaseRoutes):
 
         @self.router.post("/users", status_code=201)
         def create_user(payload: UserCreate, conn=Depends(get_db)):
-            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-                cur.execute(
-                    """
-                    INSERT INTO users (email, password_hash, is_guest)
-                    VALUES (%s, %s, %s)
-                    RETURNING id, email, is_guest, created_at
-                    """,
-                    (payload.email, payload.password_hash, payload.is_guest),
-                )
-                row = cur.fetchone()
-            conn.commit()
-            return row
+            result = conn.run(
+                """INSERT INTO users (email, password_hash, is_guest)
+                   VALUES (:email, :pwd, :guest)
+                   RETURNING id, email, is_guest, created_at""",
+                email=payload.email,
+                pwd=payload.password_hash,
+                guest=payload.is_guest,
+            )
+            cols = [c["name"] for c in conn.columns]
+            return rows_to_dicts(cols, result)[0]
 
         @self.router.get("/users/{user_id}")
         def get_user(user_id: int, conn=Depends(get_db)):
-            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-                cur.execute(
-                    "SELECT id, email, is_guest, created_at, last_seen_at FROM users WHERE id = %s",
-                    (user_id,),
-                )
-                row = cur.fetchone()
-            if not row:
+            result = conn.run(
+                """SELECT id, email, is_guest, created_at, last_seen_at
+                   FROM users WHERE id = :uid""",
+                uid=user_id,
+            )
+            if not result:
                 raise HTTPException(status_code=404, detail="User not found")
-            return row
+            cols = [c["name"] for c in conn.columns]
+            return rows_to_dicts(cols, result)[0]
 
         @self.router.patch("/users/{user_id}/last-seen")
         def update_last_seen(user_id: int, conn=Depends(get_db)):
-            with conn.cursor() as cur:
-                cur.execute("UPDATE users SET last_seen_at = NOW() WHERE id = %s", (user_id,))
-            conn.commit()
+            conn.run("UPDATE users SET last_seen_at = NOW() WHERE id = :uid", uid=user_id)
             return {"status": "ok"}
 
 

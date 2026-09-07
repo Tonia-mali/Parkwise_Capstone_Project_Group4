@@ -1,50 +1,48 @@
 # database.py — ParkWise Nairobi
-# DatabasePool class manages psycopg2 connections.
-# Switched from asyncpg to psycopg2-binary for Python 3.14 compatibility.
+# DatabasePool class using pg8000 — pure Python, works on Python 3.14.
 
 import os
-import psycopg2
-import psycopg2.extras
+import pg8000.native
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from urllib.parse import urlparse
 
 
 class DatabasePool:
-    """Manages psycopg2 connections for the ParkWise FastAPI backend."""
+    """Manages pg8000 connections for the ParkWise FastAPI backend."""
 
     def __init__(self):
-        self._dsn = self._resolve_dsn()
-
-    # ── Setup ─────────────────────────────────────────────────────────────────
+        self._params = self._resolve_params()
 
     @staticmethod
-    def _resolve_dsn() -> str:
-        """Read DATABASE_URL from environment and normalise the scheme."""
+    def _resolve_params() -> dict:
+        """Parse DATABASE_URL into pg8000 connection params."""
         url = os.environ.get("DATABASE_URL", "")
-        # Ensure postgresql:// scheme
-        if url.startswith("postgres://"):
-            url = url.replace("postgres://", "postgresql://", 1)
-        return url
+        if not url:
+            return {}
+        parsed = urlparse(url)
+        return {
+            "host":     parsed.hostname,
+            "port":     parsed.port or 5432,
+            "database": parsed.path.lstrip("/"),
+            "user":     parsed.username,
+            "password": parsed.password,
+            "ssl_context": True,
+        }
 
     async def connect(self) -> None:
-        """Validate DSN on startup."""
-        if not self._dsn:
+        if not self._params:
             raise RuntimeError("DATABASE_URL environment variable is not set.")
-        print("[database] DATABASE_URL is set — psycopg2 ready.")
+        print("[database] pg8000 ready.")
 
     async def disconnect(self) -> None:
-        """No persistent pool to close with psycopg2."""
         print("[database] Shutdown complete.")
 
-    # ── Access ────────────────────────────────────────────────────────────────
-
     def get_connection(self):
-        """Open and return a new psycopg2 connection."""
-        if not self._dsn:
+        """Open and return a new pg8000 connection."""
+        if not self._params:
             raise RuntimeError("DATABASE_URL is not set.")
-        return psycopg2.connect(self._dsn)
-
-    # ── FastAPI lifespan integration ──────────────────────────────────────────
+        return pg8000.native.Connection(**self._params)
 
     @asynccontextmanager
     async def _lifespan_cm(self, app: FastAPI):
@@ -58,12 +56,12 @@ class DatabasePool:
         return self._lifespan_cm(app)
 
 
-# ── Shared singleton ──────────────────────────────────────────────────────────
+# Shared singleton
 db = DatabasePool()
 
 
 def get_db():
-    """FastAPI dependency — yields a psycopg2 connection, closes after request."""
+    """FastAPI dependency — yields a pg8000 connection, closes after request."""
     conn = db.get_connection()
     try:
         yield conn
