@@ -38,8 +38,9 @@ from endpoints import build_router
 async def lifespan(app: FastAPI):
     # ── Database pool ────────────────────────────────────────────────────
     await db.connect()
-    # ── CSV + model loading (runs once on startup) ───────────────────────
-    load_data()
+    # ── CSV + model loading in background so port opens immediately ──────
+    import threading
+    threading.Thread(target=load_data, daemon=True).start()
     yield
     # ── Shutdown ─────────────────────────────────────────────────────────
     await db.disconnect()
