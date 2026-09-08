@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>ParkWise · Smart Parking</title>
+<meta name="description" content="Find parking near you. Real-time availability, busyness forecasts, and turn-by-turn navigation. Book your bay in seconds."/>
+<meta property="og:title" content="ParkWise · Smart Parking"/>
+<meta property="og:description" content="Find available parking near you. See how busy it gets. Navigate and book in seconds."/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=1200&q=80&fit=crop"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="ParkWise Nairobi"/>
+<meta name="twitter:description" content="Smart parking for Nairobi CBD. 500 spots, real-time availability, AI predictions."/>
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=1200&q=80&fit=crop"/>
+<meta name="theme-color" content="#1B4332"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231B4332'/><text x='5' y='23' font-size='20' font-weight='900' fill='%23F59E0B' font-style='italic'>P</text></svg>"/>
+<!-- Google Maps API — replace YOUR_GOOGLE_MAPS_API_KEY with your actual key -->
+<script src="https://maps.googleapis.com/maps/api/js?key=__GOOGLE_MAPS_KEY__&libraries=places,geometry&callback=initGoogleMap" async defer></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#000000;color:#111827;font-size:14px;-webkit-font-smoothing:antialiased}
+*::-webkit-scrollbar{display:none}*{scrollbar-width:none}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input{font-family:inherit;outline:none}
+:root{
+  --primary:#1B4332;--primary-l:#2D6A4F;--primary-ll:#40916C;--primary-dim:#D8F3DC;--primary-faint:#F0FAF4;
+  --accent:#F59E0B;--accent-d:#D97706;--accent-dim:#FEF3C7;
+  --green:#2D9D5C;--green-dim:#D1FAE5;--green-d:#065F46;
+  --amber:#D97706;--amber-dim:#FEF3C7;
+  --red:#DC2626;--red-dim:#FEE2E2;--red-d:#991B1B;
+  --purple:#6D28D9;--purple-dim:#EDE9FE;
+  --teal:#0D9488;--teal-dim:#CCFBF1;
+  --bg:#F9FAFB;--white:#fff;
+  --text:#111827;--text2:#4B5563;--text3:#9CA3AF;
+  --border:#E5E7EB;--border2:#D1D5DB;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 4px 12px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.05);
+  --shadow-lg:0 10px 24px rgba(0,0,0,.1),0 4px 8px rgba(0,0,0,.06);
+  --r:8px;--r-lg:12px;--r-xl:16px;--r-pill:24px;
+  --navy:#1B4332;--blue:#1B4332;--blue-dim:#D8F3DC;--blue-faint:#F0FAF4;--blue-l:#2D6A4F;
+}
+
+/* ── DARK MODE ── */
+[data-theme="dark"]{
+  --primary:#2D9D5C;--primary-l:#40916C;--primary-ll:#52B788;--primary-dim:#1A3D28;--primary-faint:#0F2318;
+  --accent:#F59E0B;--accent-d:#D97706;--accent-dim:#422006;
+  --green:#34D399;--green-dim:#064E3B;--green-d:#6EE7B7;
+  --amber:#FBBF24;--amber-dim:#451A03;
+  --red:#F87171;--red-dim:#450A0A;--red-d:#FCA5A5;
+  --bg:#0F1A14;--white:#1C2E22;
+  --text:#F0FAF4;--text2:#9DB8A8;--text3:#5A7A68;
+  --border:#2A4035;--border2:#3A5045;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+  --shadow:0 4px 12px rgba(0,0,0,.3),0 1px 3px rgba(0,0,0,.2);
+  --blue-dim:#1A3D28;--blue-faint:#0F2318;
+  --teal-dim:#042F2E;--purple-dim:#1E1B4B;
+}
+[data-theme="dark"] .ob-photo::after{background:linear-gradient(to bottom,rgba(5,15,8,.35) 0%,rgba(5,15,8,.6) 35%,rgba(5,15,8,.95) 62%,rgba(5,15,8,.99) 100%)}
+[data-theme="dark"] #screen-auth{background:linear-gradient(160deg,#030D06 0%,#0F2318 45%,#1A3D28 100%)}
+[data-theme="dark"] .auth-card{background:#1C2E22;border:1px solid var(--border)}
+[data-theme="dark"] .auth-input{background:#0F1A14;border-color:var(--border)}
+[data-theme="dark"] .auth-tabs{background:#0F1A14}
+[data-theme="dark"] .google-btn{background:#0F1A14;border-color:var(--border);color:var(--text)}
+[data-theme="dark"] .park-card{background:var(--white)}
+[data-theme="dark"] .det-cell{background:var(--bg)}
+[data-theme="dark"] .modal-inner,[data-theme="dark"] .vp-inner{background:var(--white)}
+[data-theme="dark"] #bottom-sheet,[data-theme="dark"] #bottom-nav{background:var(--white)}
+[data-theme="dark"] #dest-bar{background:var(--white);border-color:var(--border)}
+[data-theme="dark"] .chip{background:var(--white);color:var(--text2)}
+[data-theme="dark"] .space-row{background:var(--white)}
+[data-theme="dark"] .set-group{background:var(--white)}
+[data-theme="dark"] .active-session-card,[data-theme="dark"] .past-group{background:var(--white)}
+[data-theme="dark"] .cost-preview-box{background:var(--primary-faint)}
+[data-theme="dark"] .slide-confirm-wrap{background:var(--primary-dim);border-color:var(--border)}
+[data-theme="dark"] .nl-search-bar{background:var(--white)}
+[data-theme="dark"] .stat-c{background:var(--white)}
+[data-theme="dark"] .qr-row{background:var(--bg)}
+[data-theme="dark"] #detail-inner{background:var(--white)}
+[data-theme="dark"] #booking-inner{background:var(--white)}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --primary:#2D9D5C;--primary-l:#40916C;--primary-ll:#52B788;--primary-dim:#1A3D28;--primary-faint:#0F2318;
+    --accent:#F59E0B;--accent-d:#D97706;--accent-dim:#422006;
+    --green:#34D399;--green-dim:#064E3B;--green-d:#6EE7B7;
+    --amber:#FBBF24;--amber-dim:#451A03;
+    --red:#F87171;--red-dim:#450A0A;--red-d:#FCA5A5;
+    --bg:#0F1A14;--white:#1C2E22;
+    --text:#F0FAF4;--text2:#9DB8A8;--text3:#5A7A68;
+    --border:#2A4035;--border2:#3A5045;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+    --shadow:0 4px 12px rgba(0,0,0,.3),0 1px 3px rgba(0,0,0,.2);
+    --blue-dim:#1A3D28;--blue-faint:#0F2318;
+    --teal-dim:#042F2E;--purple-dim:#1E1B4B;
+  }
+}
+.screen{display:none;position:fixed;top:0;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;flex-direction:column;background:var(--bg);overflow:hidden}
+@media(min-width:520px){
+  html,body{background:#111}
+  .screen{box-shadow:0 0 60px rgba(0,0,0,.4)}
+}
+
+.screen.active{display:flex}
+
+/* ── ONBOARDING ── */
+#screen-onboard{background:#0a1a0f;flex-direction:column}
+.ob-photo{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=800&q=80&fit=crop') center/cover no-repeat;z-index:0}
+.ob-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,26,15,.3) 0%,rgba(10,26,15,.5) 30%,rgba(10,26,15,.88) 58%,rgba(10,26,15,.98) 100%);pointer-events:none}
+.ob-topbar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;background:rgba(0,0,0,.3);padding:max(14px,env(safe-area-inset-top)) 16px 12px;z-index:2;backdrop-filter:blur(6px)}
+.ob-wm-row{display:flex;align-items:center;gap:1px;margin-right:auto;flex-shrink:0}
+.ob-wm-p{font-size:18px;font-weight:900;color:#fff;letter-spacing:-1px;font-style:italic}
+.ob-wm-w{font-size:18px;font-weight:900;color:#F59E0B;letter-spacing:-1px;font-style:italic}
+.ob-wm-dot{width:7px;height:7px;background:#F59E0B;border-radius:50% 50% 50% 0;transform:rotate(-45deg);margin-left:3px;margin-top:-4px;flex-shrink:0}
+.ob-stats{display:flex;gap:0}
+.ob-stat{text-align:center;min-width:56px;border-left:1px solid rgba(255,255,255,.15);padding:0 10px}
+.ob-stat-num{font-size:18px;font-weight:800;color:#fff;line-height:1}
+.ob-stat-lbl{font-size:8.5px;color:rgba(255,255,255,.5);margin-top:2px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.ob-bottom{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 28px max(40px,env(safe-area-inset-bottom))}
+.ob-tagline{font-size:9.5px;color:rgba(255,255,255,.45);letter-spacing:1.2px;text-transform:uppercase;font-weight:600;margin-bottom:12px}
+.ob-headline{font-size:30px;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-.8px;margin-bottom:10px}
+.ob-sub{font-size:14px;color:rgba(255,255,255,.6);line-height:1.55;margin-bottom:24px}
+.ob-cta{width:100%;height:52px;background:var(--accent);border:none;border-radius:var(--r-pill);color:#111827;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 20px rgba(245,158,11,.3)}
+.ob-signin{text-align:center;margin-top:14px;font-size:13px;color:rgba(255,255,255,.45);cursor:pointer}
+.ob-signin span{color:rgba(255,255,255,.75);font-weight:600;text-decoration:underline}
+
+/* ── AUTH ── */
+#screen-auth{background:linear-gradient(160deg,#081C15 0%,#1B4332 45%,#2D6A4F 100%);align-items:center;justify-content:center;padding:24px;overflow-y:auto}
+.auth-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:28px}
+.auth-wm{display:flex;align-items:center;gap:1px;margin-bottom:6px}
+.auth-wm-p{font-size:34px;font-weight:900;color:#fff;letter-spacing:-1.5px;font-style:italic}
+.auth-wm-w{font-size:34px;font-weight:900;color:var(--accent);letter-spacing:-1.5px;font-style:italic}
+.auth-wm-dot{width:12px;height:12px;background:var(--accent);border-radius:50% 50% 50% 0;transform:rotate(-45deg);margin-left:4px;margin-top:-8px;flex-shrink:0}
+.auth-tag{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase}
+.auth-card{background:var(--white);border-radius:16px;padding:20px;width:100%;max-width:380px}
+.auth-tabs{display:flex;background:var(--bg);border-radius:var(--r);padding:3px;gap:3px;margin-bottom:18px}
+.auth-tab{flex:1;text-align:center;padding:9px 0;font-size:12px;font-weight:500;border-radius:6px;cursor:pointer;color:var(--text2);transition:all .2s;border:none;background:transparent}
+.auth-tab.active{background:var(--primary);color:#fff;font-weight:700}
+.auth-form{display:none}.auth-form.active{display:block}
+.field-lbl{font-size:10px;font-weight:700;color:var(--text2);letter-spacing:.4px;margin-bottom:5px;margin-top:14px;display:block}
+.field-lbl:first-of-type{margin-top:0}
+.auth-input{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);height:44px;padding:0 12px;color:var(--text);font-size:13px;transition:border .2s}
+.auth-input:focus{border-color:var(--primary)}
+.auth-input.err{border-color:var(--red)}
+.auth-err{color:var(--red);font-size:11px;margin-top:6px;display:none}
+.auth-btn{width:100%;height:46px;background:var(--primary);border:none;border-radius:var(--r-lg);color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:18px;transition:opacity .2s}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0}
+.divider-line{flex:1;height:1px;background:var(--border)}
+.divider span{font-size:11px;color:var(--text3)}
+.google-btn{width:100%;height:42px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--text);font-size:12px;font-weight:500}
+.auth-terms{font-size:10px;color:rgba(255,255,255,.4);text-align:center;margin-top:14px}
+
+/* ── APP SHELL ── */
+#screen-app{background:var(--bg);min-height:0}
+#app-navbar{background:var(--primary);display:flex;align-items:center;justify-content:space-between;padding:max(12px,env(safe-area-inset-top)) 16px 11px;flex-shrink:0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+.nav-wm{display:flex;align-items:center;gap:1px}
+.nwm-p{font-size:17px;font-weight:900;color:#fff;letter-spacing:-.8px;font-style:italic}
+.nwm-w{font-size:17px;font-weight:900;color:var(--accent);letter-spacing:-.8px;font-style:italic}
+.nwm-dot{width:9px;height:9px;background:var(--accent);border-radius:50% 50% 50% 0;transform:rotate(-45deg);margin-left:3px;margin-top:-5px;flex-shrink:0}
+.nav-actions{display:flex;align-items:center;gap:6px}
+.nav-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.12);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff}
+
+/* ── TAB CONTENT WRAPPER ── */
+#tab-wrapper{flex:1;overflow:hidden;min-height:0;position:relative;display:flex;flex-direction:column}
+.tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0}
+.tab-panel.active{display:flex}
+
+/* ── BOTTOM NAV ── */
+#bottom-nav{display:flex;background:var(--white);padding:6px 0 max(10px,env(safe-area-inset-bottom));flex-shrink:0;z-index:200;box-shadow:0 -1px 0 var(--border),0 -4px 16px rgba(0,0,0,.06)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;border:none;background:none;padding:2px 0}
+.ni-icon{display:flex;align-items:center;justify-content:center;color:var(--text3);transition:color .15s}
+.ni.active .ni-icon{color:var(--primary)}
+.ni-lbl{font-size:9px;color:var(--text3);font-weight:500;transition:color .15s;letter-spacing:.1px}
+.ni.active .ni-lbl{color:var(--primary);font-weight:700}
+.ni-map-center{width:44px;height:44px;background:var(--primary);border-radius:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-bottom:2px;box-shadow:0 2px 8px rgba(27,67,50,.3)}
+.ni-dot{width:4px;height:4px;background:var(--primary);border-radius:50%;display:none}
+.ni.active .ni-dot{display:block}
+
+/* ── OVERVIEW ── */
+#tab-overview{overflow-y:auto}
+.ov-head{background:var(--primary);padding:18px 16px 16px;flex-shrink:0}
+.ov-greet{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.ov-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:4px;font-weight:500}
+.quick-strip{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;background:var(--white);border-bottom:1px solid var(--border);flex-shrink:0}
+.qs-pill{border-radius:var(--r-pill);padding:6px 14px;font-size:10px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.qs-pill.g{background:var(--green-dim);color:var(--green-d);border:1.5px solid rgba(45,157,92,.2)}
+.qs-pill.a{background:var(--amber-dim);color:var(--amber-d);border:1.5px solid rgba(217,119,6,.2)}
+.qs-pill.r{background:var(--red-dim);color:var(--red-d);border:1.5px solid rgba(220,38,38,.2)}
+.qs-pill.n{background:var(--bg);color:var(--text2);border:1.5px solid var(--border)}
+.stats-hero{background:var(--primary);margin:12px 16px 0;border-radius:var(--r-xl);padding:16px 18px;box-shadow:0 4px 16px rgba(27,67,50,.2)}
+.hero-val{font-size:36px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px}
+.hero-lbl{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px;font-weight:500}
+.stats-sub{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:8px 16px}
+.stat-c{background:var(--white);border-radius:var(--r-lg);padding:12px 10px;box-shadow:var(--shadow-sm)}
+.stat-v{font-size:20px;font-weight:800;color:var(--primary);line-height:1;letter-spacing:-.5px}
+.stat-l{font-size:9px;color:var(--text3);margin-top:4px;line-height:1.4;font-weight:500}
+.sec-head{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;padding:16px 16px 8px;text-transform:uppercase}
+.chart-wrap{padding:0 16px}
+.chart-toggle{display:flex;gap:6px;margin-bottom:8px}
+.ct-btn{padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--text2);cursor:pointer}
+.ct-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.chart-bars{display:flex;align-items:flex-end;gap:3px;height:56px;margin-bottom:2px}
+.c-bar{flex:1;border-radius:2px 2px 0 0;min-height:3px;transition:height .4s ease}
+.c-bar.current{background:var(--primary)}
+.c-bar.day{background:var(--primary-dim)}
+.c-bar.eve{background:var(--accent-dim)}
+.bar-lbl-row{display:flex;gap:3px;margin-bottom:8px}
+.bar-lbl{flex:1;text-align:center;font-size:7.5px;color:var(--text3)}
+.ai-insight{background:linear-gradient(135deg,#1B4332 0%,#2D6A4F 100%);border-radius:var(--r-lg);padding:14px 16px;margin:0 16px 12px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 4px 16px rgba(27,67,50,.15)}
+.ai-badge{background:var(--accent);color:var(--text);font-size:8px;font-weight:800;border-radius:4px;padding:2px 7px;display:inline-flex;align-items:center;gap:3px;flex-shrink:0;letter-spacing:.3px}
+.ai-insight-text{font-size:11px;color:rgba(255,255,255,.9);line-height:1.6;font-weight:500}
+.spot-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer;background:var(--white);transition:background .15s;border-left:4px solid transparent}
+.spot-icon{width:32px;height:32px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.spot-name{font-size:12px;font-weight:600;color:var(--text)}
+.spot-meta{font-size:9px;color:var(--text3);margin-top:1px}
+.traffic-bar{display:flex;gap:2px;margin-top:3px}
+.tb-seg{width:13px;height:4px;border-radius:2px}
+.spot-right{margin-left:auto;text-align:right;flex-shrink:0}
+.spot-price{font-size:13px;font-weight:700;color:var(--text)}
+.spot-status{font-size:8px;font-weight:700;border-radius:10px;padding:2px 7px;display:inline-block;margin-top:3px}
+.hist-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);background:var(--white)}
+.hist-icon{width:36px;height:36px;background:var(--primary-dim);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hist-name{font-size:11px;font-weight:600;color:var(--text)}
+.hist-meta{font-size:9px;color:var(--text3);margin-top:1px}
+.hist-cost{font-size:13px;font-weight:700;color:var(--text);margin-left:auto}
+
+/* ── SPACES ── */
+#tab-spaces{overflow:hidden}
+.sp-head{background:var(--primary);padding:16px 16px 14px;flex-shrink:0}
+.sp-title{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.sp-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:3px;font-weight:500}
+.nl-search-bar{margin:12px 16px 0;background:var(--white);border-radius:var(--r-lg);border:2px solid var(--primary);padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 2px 8px rgba(27,67,50,.1)}
+.nl-icon{font-size:16px;flex-shrink:0;color:var(--primary)}
+.nl-text{font-size:11px;color:var(--primary);font-style:italic;flex:1;font-weight:500}
+.nl-badge{background:var(--accent);color:var(--text);font-size:8px;font-weight:800;border-radius:4px;padding:2px 7px;flex-shrink:0;letter-spacing:.3px}
+.filter-row{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;flex-shrink:0;background:var(--white);border-bottom:1px solid var(--border)}
+.chip{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-pill);padding:8px 14px;font-size:11px;font-weight:500;color:var(--text2);white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .15s}
+.chip.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:700}
+.chip.green-active{background:var(--green);border-color:var(--green-d);color:#fff;font-weight:700}
+#spaces-list{flex:1;overflow-y:auto;padding:8px 16px 80px;min-height:0}
+.space-row{background:var(--white);border-radius:var(--r-lg);padding:13px 14px 13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:var(--shadow-sm);border-left:4px solid transparent}
+.sr-icon{width:36px;height:36px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sr-name{font-size:12px;font-weight:700;color:var(--text)}
+.sr-meta{font-size:9px;color:var(--text3);margin-top:2px}
+.sr-right{margin-left:auto;text-align:right;flex-shrink:0}
+.sr-price{font-size:14px;font-weight:800;color:var(--text)}
+.sr-status{font-size:8.5px;font-weight:700;border-radius:10px;padding:2px 7px;display:inline-block;margin-top:4px}
+.sr-frac{font-size:8px;color:var(--text3);margin-top:2px}
+
+/* ── MAP ── */
+#tab-map{position:relative;overflow:hidden;flex:1;min-height:0}
+#google-map{position:absolute;inset:0;z-index:1}
+#map-topbar{position:absolute;top:0;left:0;right:0;padding:9px 9px 0;z-index:15}
+#dest-bar{background:var(--white);border-radius:var(--r-lg);border:1.5px solid var(--border);padding:9px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.1);transition:border .2s}
+#dest-bar.has-dest{border-color:var(--primary)}
+.dest-icon{color:var(--text3);flex-shrink:0}
+.dest-text-wrap{flex:1;min-width:0}
+.dest-eyebrow{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.4px;margin-bottom:1px}
+.dest-value{font-size:13px;color:var(--text3);font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dest-value.set{color:var(--primary);font-weight:600}
+.dest-clear{width:22px;height:22px;border-radius:50%;background:var(--bg);display:none;align-items:center;justify-content:center;font-size:14px;color:var(--text2);cursor:pointer;flex-shrink:0;border:none}
+.dest-clear.show{display:flex}
+#anomaly-banner{display:none;background:var(--amber-dim);border-bottom:1px solid #FFE0B2;padding:6px 12px;font-size:10px;font-weight:600;color:#92400E;text-align:center;z-index:14;position:absolute;top:58px;left:0;right:0}
+#anomaly-banner.show{display:block}
+#smart-btn{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:var(--accent);color:#111827;font-size:12px;font-weight:700;border-radius:var(--r-pill);padding:11px 22px;display:flex;align-items:center;gap:6px;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(245,158,11,.4);white-space:nowrap;z-index:15;transition:bottom .3s ease;letter-spacing:.1px}
+#smart-btn.mini{bottom:calc(var(--sheet-full) + 10px)}
+#map-zoom{position:absolute;right:10px;bottom:80px;z-index:15;display:flex;flex-direction:column;gap:5px}
+.zoom-btn{width:36px;height:36px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--primary);font-size:20px;font-weight:300;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+/* ── BOTTOM SHEET ── */
+:root{--sheet-full:256px;--sheet-mini:48px}
+#bottom-sheet{position:absolute;bottom:0;left:0;right:0;background:var(--white);border-radius:14px 14px 0 0;border-top:1px solid var(--border);box-shadow:0 -2px 10px rgba(0,0,0,.08);z-index:15;height:var(--sheet-full);overflow:hidden;display:flex;flex-direction:column;transition:height .3s cubic-bezier(.4,0,.2,1)}
+#bottom-sheet.mini{height:var(--sheet-mini)}
+#sheet-handle-row{padding:8px 14px 0;cursor:pointer;flex-shrink:0;user-select:none}
+#sheet-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 7px}
+#sheet-top{display:flex;align-items:center;justify-content:space-between}
+#sheet-title-text{font-size:11px;font-weight:700;color:var(--text);letter-spacing:.3px}
+#sheet-count{font-size:11px;font-weight:600;color:var(--green)}
+#sheet-toggle-btn{font-size:11px;color:var(--primary);font-weight:600;border:none;background:none;cursor:pointer}
+#sheet-mini-bar{display:none;align-items:center;justify-content:space-between;padding:0 14px 6px}
+#sheet-mini-bar.show{display:flex}
+#sheet-mini-label{font-size:11px;font-weight:600;color:var(--text)}
+#sheet-cards{flex:1;overflow:hidden;min-height:0}
+#cards-scroll{display:flex;gap:10px;overflow-x:auto;padding:6px 14px 14px;height:100%;align-items:flex-start}
+
+/* ── PARK CARD ── */
+.park-card{min-width:140px;max-width:140px;background:var(--white);border-radius:var(--r-lg);padding:12px 12px 12px 15px;flex-shrink:0;cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .2s;box-shadow:var(--shadow-sm)}
+.park-card.selected{box-shadow:0 0 0 2px var(--primary),var(--shadow)}
+.park-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:var(--r-lg) 0 0 var(--r-lg)}
+.park-card.avail::before{background:var(--green)}
+.park-card.limited::before{background:var(--amber)}
+.park-card.full::before{background:var(--red)}
+.pc-name{font-size:10px;font-weight:600;color:var(--text2);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px}
+.pc-price{font-size:20px;font-weight:800;color:var(--text);line-height:1.1;letter-spacing:-.5px}
+.pc-unit{font-size:8px;font-weight:500;color:var(--text3)}
+.pc-dist{font-size:8.5px;color:var(--text3);margin-top:2px}
+.pc-tags{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.pc-tag{font-size:7.5px;border-radius:10px;padding:2px 7px;font-weight:700}
+.pc-tag.g{background:var(--green-dim);color:var(--green-d)}
+.pc-tag.a{background:var(--amber-dim);color:#92400E}
+.pc-tag.r{background:var(--red-dim);color:var(--red-d)}
+.pc-tag.n{background:var(--bg);color:var(--text2)}
+.pc-traffic{display:flex;align-items:center;gap:3px;margin-top:4px}
+.pc-tb-seg{width:12px;height:4px;border-radius:2px}
+.pc-traffic-lbl{font-size:7.5px;color:var(--text3)}
+.pc-btn{width:100%;padding:6px 0;border:none;border-radius:6px;font-size:9px;font-weight:700;margin-top:7px;cursor:pointer;transition:background .2s}
+.pc-btn.show-route{background:var(--primary);color:#fff}
+.pc-btn.route-shown{background:var(--primary-ll);color:#fff}
+.pc-btn.full-btn{background:var(--red-dim);color:var(--red-d);cursor:default}
+
+/* ── NAV OVERLAY ── */
+#nav-overlay{display:none;position:absolute;inset:0;z-index:20;flex-direction:column;pointer-events:none}
+#nav-overlay.active{display:flex}
+#nav-banner{background:var(--primary);padding:max(12px,env(safe-area-inset-top)) 14px 14px;display:flex;align-items:center;gap:12px;pointer-events:all}
+.nav-turn-box{width:46px;height:46px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-arrow-sym{font-size:26px;color:#fff;font-weight:800;line-height:1}
+.nav-inst{font-size:13px;font-weight:700;color:#fff;line-height:1.3}
+.nav-inst-sub{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px}
+.nav-dist-badge{background:var(--accent);color:var(--text);font-size:11px;font-weight:800;border-radius:var(--r);padding:5px 12px;margin-left:auto;white-space:nowrap;flex-shrink:0}
+#nav-spacer{flex:1}
+#nav-eta{background:var(--white);border-top:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;pointer-events:all}
+.eta-item{flex:1;display:flex;flex-direction:column;align-items:center;border-left:1px solid var(--border)}
+.eta-item:first-child{border-left:none}
+.eta-val{font-size:19px;font-weight:800;color:var(--primary);line-height:1}
+.eta-lbl{font-size:9px;color:var(--text3);margin-top:2px}
+#nav-ctrls{background:var(--white);border-top:1px solid var(--border);padding:8px 10px;display:flex;gap:8px;pointer-events:all}
+.nc{flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.nc.danger{border-color:#FECACA;background:#FFF5F5}
+.nc-icon{display:flex;align-items:center;justify-content:center;line-height:1}
+.nc-lbl{font-size:9px;color:var(--text2)}
+.nc.danger .nc-lbl{color:var(--red)}
+
+/* ── DETAIL POPUP ── */
+#detail-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:350;align-items:flex-end}
+#detail-popup.open{display:flex}
+@media(min-width:520px){#detail-popup,#booking-popup,#dest-modal,#nl-modal,#search-modal,.vp-modal,#guest-prompt{left:50%;transform:translateX(-50%);width:480px;max-width:480px}}
+#detail-inner{background:var(--white);border-radius:20px 20px 0 0;width:100%;padding:16px 16px max(20px,env(safe-area-inset-bottom));max-height:88vh;overflow-y:auto}
+.det-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 14px}
+.det-photo{height:72px;border-radius:var(--r-xl);margin-bottom:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.det-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+.det-name{font-size:17px;font-weight:800;color:var(--text);flex:1;padding-right:10px;letter-spacing:-.3px}
+.det-close{cursor:pointer;color:var(--text2);line-height:1;flex-shrink:0;background:none;border:none;padding:2px}
+.det-addr{font-size:10px;color:var(--text3);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.det-status-badge{display:inline-flex;align-items:center;gap:5px;border-radius:var(--r-pill);padding:5px 14px;font-size:11px;font-weight:700;margin:6px 0 10px}
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.det-cell{background:var(--bg);border-radius:var(--r);padding:10px}
+.det-cell-lbl{font-size:9px;color:var(--text3);font-weight:600;letter-spacing:.3px;margin-bottom:4px}
+.det-cell-val{font-size:14px;font-weight:700;color:var(--primary)}
+.det-cell-val.green{color:var(--green)}
+
+/* sentiment */
+.sentiment-section{margin:0 0 12px}
+.sentiment-lbl{font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sent-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.sent-name{font-size:9px;color:var(--text);width:64px;flex-shrink:0;font-weight:500}
+.sent-track{flex:1;background:#F0F0F0;border-radius:3px;height:6px}
+.sent-fill{height:6px;border-radius:3px}
+.sent-pct{font-size:8.5px;color:var(--text3);width:26px;text-align:right;flex-shrink:0;font-weight:600}
+
+/* bay grid compact */
+.bay-section-lbl{font-size:11px;font-weight:700;color:var(--text);margin:0 0 7px;display:flex;align-items:center;gap:6px}
+.bay-grid-compact{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.bay-pill{border-radius:20px;padding:5px 11px;font-size:10px;font-weight:700;cursor:pointer;border:1.5px solid transparent;transition:all .15s;display:flex;align-items:center;gap:4px}
+.bay-pill.free{background:var(--green-dim);color:var(--green-d);border-color:rgba(45,157,92,.25)}
+.bay-pill.taken{background:var(--bg);color:var(--text3);border-color:var(--border);cursor:default}
+.bay-pill.selected{background:var(--primary);color:#fff;border-color:var(--primary)}
+.bay-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.bay-pill.free .bay-dot{background:var(--green)}
+.bay-pill.taken .bay-dot{background:var(--border2)}
+.bay-pill.selected .bay-dot{background:rgba(255,255,255,.7)}
+
+/* predict */
+.ai-predict-box{background:var(--primary-dim);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:14px}
+.ai-predict-lbl{font-size:10px;font-weight:700;color:var(--primary);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.predict-bars{display:flex;align-items:flex-end;gap:3px;height:36px;margin-bottom:4px}
+.pb{flex:1;border-radius:2px 2px 0 0;min-height:2px}
+.predict-bar-lbls{display:flex;gap:3px;margin-bottom:4px}
+.predict-bar-lbl{flex:1;text-align:center;font-size:7px;color:var(--primary);opacity:.7}
+.predict-hint{font-size:9px;color:var(--primary);font-weight:500}
+
+/* det actions */
+.det-actions{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.det-action-btn{height:44px;border:none;border-radius:var(--r-lg);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.det-dismiss{background:var(--bg);border:1.5px solid var(--border);color:var(--text2);border-radius:var(--r-lg);height:40px;font-size:12px;cursor:pointer;font-family:inherit}
+
+/* ── BOOKING ── */
+#booking-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:360;align-items:flex-end}
+#booking-popup.open{display:flex}
+#booking-inner{background:var(--white);border-radius:20px 20px 0 0;width:100%;padding:16px 16px max(20px,env(safe-area-inset-bottom));max-height:90vh;overflow-y:auto}
+.bk-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 14px}
+.bk-facility-name{font-size:14px;font-weight:800;color:var(--primary);margin-bottom:2px;letter-spacing:-.2px}
+.bk-facility-sub{font-size:10px;color:var(--text3);margin-bottom:14px}
+.bk-section-lbl{font-size:10px;font-weight:700;color:var(--text2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px}
+.time-tabs{display:flex;gap:5px;margin-bottom:14px}
+.time-tab{flex:1;text-align:center;padding:8px 0;border-radius:var(--r);font-size:11px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--text2);cursor:pointer;transition:all .15s}
+.time-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.dur-pills{display:flex;gap:6px;margin-bottom:14px}
+.dur-pill{flex:1;text-align:center;padding:8px 0;border-radius:var(--r);font-size:11px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--text2);cursor:pointer;transition:all .15s}
+.dur-pill.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.cost-preview-box{background:var(--primary-faint);border-radius:var(--r-lg);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border:1px solid rgba(27,67,50,.12)}
+.cost-preview-lbl{font-size:10px;color:var(--primary);font-weight:600}
+.cost-preview-sub{font-size:8.5px;color:var(--primary);opacity:.7;margin-top:2px}
+.cost-preview-val{font-size:24px;font-weight:800;color:var(--primary);letter-spacing:-.5px}
+.selected-bay-info{background:var(--green-dim);border-radius:var(--r);padding:8px 12px;margin-bottom:12px;font-size:10px;color:var(--green-d);font-weight:600;border:1px solid rgba(45,157,92,.25)}
+.reminder-row{background:var(--amber-dim);border-radius:var(--r);padding:9px 12px;display:flex;align-items:center;gap:8px;margin-bottom:14px;border:1px solid rgba(217,119,6,.2)}
+.reminder-text{font-size:10px;color:#92400E;flex:1}
+.toggle-small{width:34px;height:19px;background:var(--primary);border-radius:10px;position:relative;cursor:pointer;flex-shrink:0;transition:background .2s}
+.toggle-dot{width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;right:2.5px;top:2.5px;transition:right .2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.toggle-small.off{background:var(--border2)}
+.toggle-small.off .toggle-dot{right:calc(100% - 16.5px)}
+.slide-confirm-wrap{position:relative;background:var(--primary-dim);border-radius:var(--r-pill);height:52px;overflow:hidden;border:2px solid rgba(27,67,50,.2);user-select:none;-webkit-user-select:none}
+.slide-confirm-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--primary);letter-spacing:.2px;pointer-events:none;padding-left:50px}
+.slide-handle{position:absolute;left:5px;top:6px;width:40px;height:40px;background:var(--primary);border-radius:20px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;box-shadow:0 2px 8px rgba(27,67,50,.3);cursor:grab;touch-action:none}
+.slide-handle:active{cursor:grabbing}
+.slide-handle.confirmed{background:var(--green)}
+.slide-note{text-align:center;font-size:8.5px;color:var(--text3);margin-top:7px}
+
+/* ── BOOKINGS TAB ── */
+#tab-bookings{overflow-y:auto;background:var(--bg)}
+.bktab-head{background:var(--primary);padding:16px 16px 14px;flex-shrink:0}
+.bktab-title{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.active-session-card{background:var(--white);border-radius:var(--r-xl);padding:16px;margin:12px 16px 0;box-shadow:var(--shadow);border-left:4px solid var(--primary)}
+.as-status{font-size:9px;font-weight:700;color:var(--green);letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;gap:5px;margin-bottom:8px}
+.as-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.as-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px}
+.as-time{font-size:10px;color:var(--text3)}
+.timer-wrap{display:flex;justify-content:center;margin:10px 0 6px}
+.timer-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.timer-val{font-size:22px;font-weight:800;color:var(--primary);line-height:1;letter-spacing:-.5px}
+.timer-sub{font-size:8px;color:var(--text3);margin-top:2px}
+.running-cost-row{text-align:center;font-size:10px;color:var(--text3);margin-bottom:10px}
+.running-cost-row span{font-size:22px;font-weight:800;color:var(--primary);letter-spacing:-.5px}
+.qr-row{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:var(--r-lg);padding:10px 12px;margin-bottom:10px}
+.qr-box{width:52px;height:52px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.qr-info-name{font-size:11px;font-weight:700;color:var(--text)}
+.qr-info-ref{font-size:9px;color:var(--text3);margin-top:2px}
+.qr-info-scan{font-size:8.5px;color:var(--text3);margin-top:1px}
+.end-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:var(--r-lg);padding:12px 0;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.past-section{padding:10px 16px 80px}
+.past-sec-lbl{font-size:9.5px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.past-group{background:var(--white);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-sm)}
+.past-item{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border)}
+.past-item:last-child{border-bottom:none}
+.past-ico{width:36px;height:36px;background:var(--primary-dim);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.past-name{font-size:11px;font-weight:600;color:var(--text)}
+.past-meta{font-size:9px;color:var(--text3);margin-top:1px}
+.past-cost{font-size:14px;font-weight:700;color:var(--text);margin-left:auto}
+
+/* ── SETTINGS ── */
+#tab-settings{overflow-y:auto;background:var(--bg)}
+.set-profile{background:var(--primary);padding:22px 16px 20px;display:flex;align-items:center;gap:16px}
+.set-avatar{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0}
+.set-name{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.set-email{font-size:11px;color:rgba(255,255,255,.55);margin-top:3px}
+.set-section{padding:12px 16px 0}
+.set-section-lbl{font-size:9.5px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.set-group{background:var(--white);border-radius:var(--r-xl);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.set-row{display:flex;align-items:center;padding:13px 14px;border-bottom:1px solid #F5F5F5;gap:10px}
+.set-row:last-child{border-bottom:none}
+.set-row-icon{width:32px;height:32px;background:var(--primary-dim);border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.set-row-lbl{font-size:12px;color:var(--text);flex:1;font-weight:500}
+.set-row-val{font-size:11px;color:var(--text3)}
+.set-row-arrow{color:var(--text3);font-size:16px}
+.toggle{width:40px;height:22px;border-radius:11px;position:relative;cursor:pointer;flex-shrink:0;transition:background .2s}
+.toggle.on{background:var(--primary)}
+.toggle.off{background:var(--border2)}
+.toggle-knob{width:17px;height:17px;background:#fff;border-radius:50%;position:absolute;top:2.5px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on .toggle-knob{left:calc(100% - 19.5px)}
+.toggle.off .toggle-knob{left:2.5px}
+.signout-row .set-row-lbl{color:var(--red)}
+.signout-row .set-row-icon{background:var(--red-dim)}
+
+/* ── MODALS ── */
+#dest-modal,#nl-modal,#search-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;align-items:flex-end}
+#dest-modal.open,#nl-modal.open,#search-modal.open{display:flex}
+.modal-inner{background:var(--white);border-radius:20px 20px 0 0;width:100%;padding:18px 16px max(20px,env(safe-area-inset-bottom));max-height:78vh;overflow-y:auto}
+.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px}
+.modal-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:12px}
+.dm-input-row{background:var(--bg);border:2px solid var(--primary);border-radius:var(--r-lg);height:44px;display:flex;align-items:center;padding:0 12px;gap:9px;margin-bottom:10px}
+.dm-input-row input{flex:1;background:none;border:none;font-size:13px;color:var(--text);font-family:inherit}
+.dm-input-row input::placeholder{color:var(--text3)}
+.dm-from{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);height:40px;display:flex;align-items:center;padding:0 12px;gap:9px;margin-bottom:16px}
+.dm-from span{font-size:11px;color:var(--text3);flex:1}
+.dm-sec-lbl{font-size:9px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.dm-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.dm-row:last-child{border-bottom:none}
+.dm-row-icon{width:32px;height:32px;background:var(--teal-dim);border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dm-row-name{font-size:12px;font-weight:600;color:var(--text)}
+.dm-row-meta{font-size:10px;color:var(--text3);margin-top:1px}
+.dm-cta{width:100%;height:48px;background:var(--primary);border:none;border-radius:var(--r-lg);color:#fff;font-size:13px;font-weight:700;cursor:pointer;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit}
+.nl-chip{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text2);cursor:pointer;margin-bottom:6px;display:block}
+.nl-chip:active{background:var(--primary-dim)}
+#nl-results{margin-top:8px}
+.sm-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.sm-item:last-child{border-bottom:none}
+.sm-icon{width:32px;height:32px;background:var(--teal-dim);border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sm-name{font-size:12px;font-weight:500;color:var(--text)}
+.sm-meta{font-size:10px;color:var(--text3);margin-top:1px}
+.sm-price{font-size:12px;font-weight:700;color:var(--primary);margin-left:auto;white-space:nowrap}
+
+/* vehicle picker */
+.vp-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:flex-end}
+.vp-modal.open{display:flex}
+.vp-inner{background:var(--white);border-radius:20px 20px 0 0;width:100%;padding:18px 16px max(20px,env(safe-area-inset-bottom))}
+.vp-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:14px}
+.vp-option{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.vp-option:last-child{border-bottom:none}
+.vp-icon{width:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.vp-name{font-size:13px;font-weight:600;color:var(--text)}
+.vp-check{margin-left:auto;color:var(--primary)}
+
+/* toast */
+#toast{position:fixed;top:72px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;border-radius:var(--r-pill);padding:10px 18px;font-size:12px;font-weight:500;z-index:9999;display:none;white-space:nowrap;max-width:90vw;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+
+/* primary-faint for booking */
+.cost-preview-box{background:#F0FAF4}
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING -->
+<div id="screen-onboard" class="screen">
+  <div class="ob-photo"></div>
+  <div class="ob-topbar">
+    <div class="ob-wm-row"><span class="ob-wm-p">PARK</span><span class="ob-wm-w">WISE</span><div class="ob-wm-dot"></div></div>
+    <div class="ob-stats">
+      <div class="ob-stat"><div class="ob-stat-num" id="ob-avail">–</div><div class="ob-stat-lbl">Available</div></div>
+      <div class="ob-stat"><div class="ob-stat-num" id="ob-limited">–</div><div class="ob-stat-lbl">Limited</div></div>
+      <div class="ob-stat"><div class="ob-stat-num" id="ob-full">–</div><div class="ob-stat-lbl">Full</div></div>
+    </div>
+  </div>
+  <div class="ob-bottom">
+    <div class="ob-tagline">Find parking, wherever you are</div>
+    <div class="ob-headline">Stop circling.<br>Start parking.</div>
+    <div class="ob-sub">Find available parking near you. See how busy it gets. Navigate and book in seconds.</div>
+    <button class="ob-cta" onclick="finishOnboard()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      Get started
+    </button>
+    <div class="ob-signin" onclick="switchAuthTab('login');finishOnboard()">Already have an account? <span>Sign in</span></div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="screen-auth" class="screen">
+  <div class="auth-logo">
+    <div class="auth-wm"><span class="auth-wm-p">PARK</span><span class="auth-wm-w">WISE</span><div class="auth-wm-dot"></div></div>
+    <div class="auth-tag">Smart Parking · Wherever You Are</div>
+  </div>
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-signup-btn" onclick="switchAuthTab('signup')">Create account</button>
+      <button class="auth-tab" id="tab-login-btn" onclick="switchAuthTab('login')">Sign in</button>
+    </div>
+    <div id="form-signup" class="auth-form active">
+      <label class="field-lbl">Full name</label>
+      <input class="auth-input" id="su-name" type="text" placeholder="e.g. Amina Osei"/>
+      <label class="field-lbl">Email address</label>
+      <input class="auth-input" id="su-email" type="email" placeholder="you@example.com"/>
+      <label class="field-lbl">Password</label>
+      <input class="auth-input" id="su-pass" type="password" placeholder="Min. 6 characters"/>
+      <div class="auth-err" id="su-err"></div>
+      <button class="auth-btn" onclick="doSignup()">Create account →</button>
+    </div>
+    <div id="form-login" class="auth-form">
+      <label class="field-lbl">Email address</label>
+      <input class="auth-input" id="li-email" type="email" placeholder="you@example.com"/>
+      <label class="field-lbl">Password</label>
+      <input class="auth-input" id="li-pass" type="password" placeholder="Your password"/>
+      <div class="auth-err" id="li-err"></div>
+      <button class="auth-btn" onclick="doLogin()">Sign in →</button>
+    </div>
+    <div class="divider"><div class="divider-line"></div><span>or</span><div class="divider-line"></div></div>
+    <button class="google-btn" onclick="doGoogle()">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Continue with Google
+    </button>
+  </div>
+  <div class="auth-terms">By continuing you agree to our Terms &amp; Privacy Policy</div>
+  <div style="text-align:center;margin-top:16px"><button onclick="enterGuest()" style="background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;border-radius:var(--r-pill);padding:12px 28px;width:100%;max-width:380px">Skip for now →</button></div>
+</div>
+
+<!-- APP -->
+<div id="screen-app" class="screen">
+  <div id="app-navbar">
+    <div class="nav-wm"><span class="nwm-p">PARK</span><span class="nwm-w">WISE</span><div class="nwm-dot"></div></div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="openSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <button class="nav-btn" onclick="locateUser()" aria-label="Locate"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+    </div>
+  </div>
+  <div id="tab-wrapper">
+    <!-- OVERVIEW -->
+    <div id="tab-overview" class="tab-panel">
+      <div class="ov-head"><div class="ov-greet" id="ov-greet">Good morning</div><div class="ov-sub" id="ov-sub">Live parking data near you</div></div>
+      <div id="quick-strip" class="quick-strip"></div>
+      <div class="stats-hero"><div class="hero-val" id="hero-val">500</div><div class="hero-lbl">ML-monitored parking spots with real-time demand prediction</div></div>
+      <div class="stats-sub" id="stats-sub"></div>
+      <div class="sec-head">Busyness by hour</div>
+      <div class="chart-wrap">
+        <div class="chart-toggle">
+          <button class="ct-btn active" onclick="switchChart('day',this)">Daytime</button>
+          <button class="ct-btn" onclick="switchChart('evening',this)">Evening</button>
+        </div>
+        <div class="chart-bars" id="chart-bars"></div>
+        <div class="bar-lbl-row" id="bar-lbls"></div>
+      </div>
+      <div class="ai-insight"><span class="ai-badge">AI</span><div class="ai-insight-text" id="ai-insight-text">Analysing busyness patterns…</div></div>
+      <div class="sec-head">Top on-street spots</div>
+      <div id="top-spots-list" style="background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
+      <div class="sec-head">Recent sessions</div>
+      <div id="recent-sessions" style="background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
+      <div style="height:24px"></div>
+    </div>
+    <!-- SPACES -->
+    <div id="tab-spaces" class="tab-panel">
+      <div class="sp-head"><div class="sp-title">Parking spaces</div><div class="sp-sub" id="spaces-sub">Loading spaces…</div></div>
+      <div class="nl-search-bar" onclick="openNLModal()">
+        <span class="nl-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M12 3l1.88 5.76L20 10l-5.76 1.88L12 18l-1.88-5.76L4 10l5.76-1.88z"/><path d="M5 3l.88 2.12L8 6l-2.12.88L5 9l-.88-2.12L2 6l2.12-.88z" opacity=".6"/></svg></span>
+        <span class="nl-text" id="nl-placeholder">Describe what you need…</span>
+        <span class="nl-badge">AI</span>
+      </div>
+      <div class="filter-row" id="filter-row"></div>
+      <div id="spaces-list"></div>
+    </div>
+    <!-- MAP -->
+    <div id="tab-map" class="tab-panel">
+      <div id="google-map"></div>
+      <div id="anomaly-banner">Unusual traffic near CBD. Expect delays.</div>
+      <div id="map-topbar">
+        <div id="dest-bar" onclick="openDestModal()">
+          <span class="dest-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <div class="dest-text-wrap"><div class="dest-eyebrow">Destination</div><div class="dest-value" id="dest-value">Search a destination…</div></div>
+          <button class="dest-clear" id="dest-clear" onclick="clearDest(event)">✕</button>
+        </div>
+      </div>
+      <button id="smart-btn" onclick="runSmartPark()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Smart Park
+      </button>
+      <div id="map-zoom">
+        <button class="zoom-btn" onclick="gMap&&gMap.setZoom(gMap.getZoom()+1)">+</button>
+        <button class="zoom-btn" onclick="gMap&&gMap.setZoom(gMap.getZoom()-1)">−</button>
+      </div>
+      <div id="bottom-sheet">
+        <div id="sheet-handle-row" onclick="toggleSheet()">
+          <div id="sheet-handle"></div>
+          <div id="sheet-top">
+            <div id="sheet-title-text">Nearby parking</div>
+            <div style="display:flex;align-items:center;gap:8px"><div id="sheet-count"></div><button id="sheet-toggle-btn">Hide ↓</button></div>
+          </div>
+        </div>
+        <div id="sheet-mini-bar"><div id="sheet-mini-label">Tap to see spots</div><span style="font-size:11px;color:var(--primary);font-weight:600">Show ↑</span></div>
+        <div id="sheet-cards"><div id="cards-scroll"></div></div>
+      </div>
+      <!-- Nav overlay -->
+      <div id="nav-overlay">
+        <div id="nav-banner">
+          <div class="nav-turn-box"><div class="nav-arrow-sym" id="nav-arrow">↑</div></div>
+          <div style="flex:1"><div class="nav-inst" id="nav-inst">Starting navigation…</div><div class="nav-inst-sub" id="nav-inst-sub"></div></div>
+          <div class="nav-dist-badge" id="nav-dist">–</div>
+        </div>
+        <div id="nav-spacer"></div>
+        <div id="nav-eta">
+          <div class="eta-item"><div class="eta-val" id="eta-time">–</div><div class="eta-lbl">ETA</div></div>
+          <div class="eta-item"><div class="eta-val" id="eta-dist">–</div><div class="eta-lbl">Distance</div></div>
+          <div class="eta-item"><div class="eta-val" id="eta-rate">–</div><div class="eta-lbl">Rate/hr</div></div>
+        </div>
+        <div id="nav-ctrls">
+          <div class="nc danger" onclick="exitNav()"><div class="nc-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><div class="nc-lbl" style="color:var(--red)">Exit</div></div>
+          <div class="nc" onclick="toggleMute()" id="mute-ctrl"><div class="nc-icon" id="mute-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg></div><div class="nc-lbl" id="mute-lbl">Mute</div></div>
+          <div class="nc" onclick="recenterMap()"><div class="nc-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div><div class="nc-lbl">Recenter</div></div>
+          <div class="nc" onclick="rerouteNav()"><div class="nc-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></div><div class="nc-lbl">Reroute</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- BOOKINGS -->
+    <div id="tab-bookings" class="tab-panel"><div class="bktab-head"><div class="bktab-title">My Bookings</div></div><div id="bookings-content"></div></div>
+    <!-- SETTINGS -->
+    <div id="tab-settings" class="tab-panel">
+      <div class="set-profile"><div class="set-avatar" id="set-avatar">AK</div><div><div class="set-name" id="set-name">Alex Kamau</div><div class="set-email" id="set-email">alex.kamau@parkwise.co.ke</div></div></div>
+      <div class="set-section">
+        <div class="set-section-lbl">Preferences</div>
+        <div class="set-group">
+          <div class="set-row"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></div><div class="set-row-lbl">Push notifications</div><div class="toggle on" id="tog-notif" onclick="toggleSetting(this)"><div class="toggle-knob"></div></div></div>
+          <div class="set-row"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div><div class="set-row-lbl">Voice guidance</div><div class="toggle on" id="tog-voice" onclick="toggleVoice(this)"><div class="toggle-knob"></div></div></div>
+          <div class="set-row"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div><div class="set-row-lbl">Appearance</div><div style="display:flex;gap:4px;margin-left:auto"><button onclick="setTheme('light')" id="theme-light" style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;font-family:inherit">Light</button><button onclick="setTheme('system')" id="theme-system" style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;border:1.5px solid var(--primary);background:var(--primary);color:#fff;cursor:pointer;font-family:inherit">Auto</button><button onclick="setTheme('dark')" id="theme-dark" style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;font-family:inherit">Dark</button></div></div>
+          <div class="set-row" onclick="openVehiclePicker()" style="cursor:pointer"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="10" width="22" height="10" rx="2"/><path d="M5 10V7a1 1 0 011-1h12a1 1 0 011 1v3"/><circle cx="7" cy="20" r="2"/><circle cx="17" cy="20" r="2"/></svg></div><div class="set-row-lbl">Vehicle type</div><div class="set-row-val" id="vehicle-val">Sedan</div><div class="set-row-arrow">›</div></div>
+        </div>
+        <div class="set-section-lbl">Data</div>
+        <div class="set-group">
+          <div class="set-row"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="set-row-lbl">Snapshot interval</div><div class="set-row-val">45 min</div></div>
+          <div class="set-row"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10"/></svg></div><div class="set-row-lbl">Calibration status</div><div class="set-row-val" style="color:var(--green);font-weight:600">Live</div></div>
+        </div>
+        <div class="set-section-lbl">Account</div>
+        <div class="set-group">
+          <div class="set-row" onclick="exportData()" style="cursor:pointer"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div><div class="set-row-lbl">Export my data</div><div class="set-row-arrow">›</div></div>
+          <div class="set-row" onclick="changePassword()" style="cursor:pointer"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><div class="set-row-lbl">Change password</div><div class="set-row-arrow">›</div></div>
+          <div class="set-row signout-row" onclick="doSignOut()" style="cursor:pointer"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><div class="set-row-lbl">Sign out</div></div>
+        </div>
+        <div class="set-section-lbl">About</div>
+        <div class="set-group">
+          <div class="set-row"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div style="flex:1"><div class="set-row-lbl">ParkWise Nairobi</div><div class="set-row-val" style="font-size:10px;margin-top:1px">Data Science Capstone 2026 · Team of 6</div></div></div>
+          <div class="set-row"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><div style="flex:1"><div class="set-row-lbl">Dataset</div><div class="set-row-val" style="font-size:10px;margin-top:1px">500 ML facilities (Nairobi) + worldwide OSM coverage</div></div></div>
+          <div class="set-row"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M12 3l1.88 5.76L20 10l-5.76 1.88L12 18l-1.88-5.76L4 10l5.76-1.88z"/></svg></div><div style="flex:1"><div class="set-row-lbl">AI Model</div><div class="set-row-val" style="font-size:10px;margin-top:1px">Gradient Boosting · Demand prediction</div></div></div>
+          <div class="set-row"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div style="flex:1"><div class="set-row-lbl">CNN Occupancy</div><div class="set-row-val" style="font-size:10px;margin-top:1px">ResNet-18 · Satellite imagery analysis</div></div></div>
+          <div class="set-row"><div class="set-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div style="flex:1"><div class="set-row-lbl">Map & Navigation</div><div class="set-row-val" style="font-size:10px;margin-top:1px">Google Maps · Directions API · Places</div></div></div>
+        </div>
+        <div style="text-align:center;padding:4px 0 80px;font-size:10px;color:var(--text3)">ParkWise Nairobi · v3.0 · Built with ♥ in Nairobi</div>
+      </div>
+    </div>
+  </div>
+  <!-- BOTTOM NAV -->
+  <div id="bottom-nav">
+    <button class="ni" id="nav-overview" onclick="switchTab('overview',this)"><span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span class="ni-lbl">Overview</span><div class="ni-dot"></div></button>
+    <button class="ni" id="nav-spaces" onclick="switchTab('spaces',this)"><span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span><span class="ni-lbl">Spaces</span><div class="ni-dot"></div></button>
+    <button class="ni" id="nav-map" onclick="switchTab('map',this)"><div class="ni-map-center"><span class="ni-icon" style="color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span></div><span class="ni-lbl">Map</span><div class="ni-dot"></div></button>
+    <button class="ni" id="nav-bookings" onclick="switchTab('bookings',this)"><span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="ni-lbl">Bookings</span><div class="ni-dot"></div></button>
+    <button class="ni" id="nav-settings" onclick="switchTab('settings',this)"><span class="ni-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span><span class="ni-lbl">Settings</span><div class="ni-dot"></div></button>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="dest-modal"><div style="flex:1" onclick="closeDestModal()"></div><div class="modal-inner" id="dest-modal-inner"><div class="modal-handle"></div><div class="modal-title">Where are you going?</div><div class="dm-input-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input id="dest-input" placeholder="Search any destination in Nairobi…" oninput="onDestInput(this.value)"/></div><div class="dm-from"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg><span>Your current location</span></div><div class="dm-sec-lbl" id="dest-sec-lbl">Popular destinations</div><div id="dest-suggestions"></div><button class="dm-cta" onclick="applyDest()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Find parking near this destination</button></div></div>
+<div id="nl-modal"><div style="flex:1" onclick="closeNLModal()"></div><div class="modal-inner" style="max-height:82vh;display:flex;flex-direction:column"><div class="modal-handle"></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M12 3l1.88 5.76L20 10l-5.76 1.88L12 18l-1.88-5.76L4 10l5.76-1.88z"/></svg><div><div class="modal-title" style="margin:0">Smart search</div><div style="font-size:10px;color:var(--text3)">Describe what you need in plain English</div></div></div><div style="display:flex;gap:8px;margin-bottom:12px"><input id="nl-input" style="flex:1;background:var(--bg);border:2px solid var(--primary);border-radius:var(--r-lg);height:44px;padding:0 12px;color:var(--text);font-size:13px;font-family:inherit" placeholder="e.g. safe covered parking near KNH…" type="text" onkeydown="if(event.key==='Enter')runNLSearch()"/><button onclick="runNLSearch()" style="width:44px;height:44px;background:var(--primary);border:none;border-radius:var(--r-lg);color:#fff;font-size:18px;cursor:pointer;font-family:inherit">→</button></div><div id="nl-suggestions"><div class="nl-chip" onclick="fillNL(this)">"Cheap on-street parking in Zone I"</div><div class="nl-chip" onclick="fillNL(this)">"Covered off-street near CBD, open now"</div><div class="nl-chip" onclick="fillNL(this)">"Safe parking with attendant, under KES 300"</div><div class="nl-chip" onclick="fillNL(this)">"Available spots with low traffic right now"</div><div class="nl-chip" onclick="fillNL(this)">"Parking near the hospital under 2 hours"</div><div class="nl-chip" onclick="fillNL(this)">"Overnight parking Zone II"</div></div><div id="nl-results" style="overflow-y:auto;flex:1"></div></div></div>
+<div id="search-modal"><div style="flex:1" onclick="closeSearch()"></div><div class="modal-inner" style="max-height:75vh;display:flex;flex-direction:column"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><button onclick="closeSearch()" style="font-size:20px;cursor:pointer;color:var(--text2);background:none;border:none;padding:2px">✕</button><input id="sm-field" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);height:42px;padding:0 12px;color:var(--text);font-size:13px;font-family:inherit" placeholder="Search by name, road, or area…" oninput="doSearch(this.value)"/></div><div id="sm-results" style="overflow-y:auto;flex:1"></div></div></div>
+<div id="detail-popup"><div style="flex:1" onclick="closeDetail()"></div><div id="detail-inner"></div></div>
+<div id="booking-popup"><div style="flex:1" onclick="closeBookingPopup()"></div><div id="booking-inner"></div></div>
+<div class="vp-modal" id="vehicle-picker"><div style="flex:1" onclick="closeVehiclePicker()"></div><div class="vp-inner"><div class="vp-title">Select vehicle type</div>
+  <div class="vp-option" onclick="setVehicle('Sedan')"><div class="vp-icon"><svg width="32" height="24" viewBox="0 0 40 24" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="9" width="32" height="12" rx="3"/><path d="M10 9V7a2 2 0 012-2h16a2 2 0 012 2v2"/><circle cx="11" cy="21" r="3"/><circle cx="29" cy="21" r="3"/></svg></div><span class="vp-name">Sedan</span><span class="vp-check" id="vp-check-Sedan">✓</span></div>
+  <div class="vp-option" onclick="setVehicle('SUV')"><div class="vp-icon"><svg width="32" height="24" viewBox="0 0 40 24" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="36" height="13" rx="3"/><path d="M8 8V5a2 2 0 012-2h18a2 2 0 012 2v3"/><circle cx="10" cy="21" r="3"/><circle cx="30" cy="21" r="3"/><line x1="2" y1="14" x2="38" y2="14"/></svg></div><span class="vp-name">SUV / 4×4</span><span class="vp-check" id="vp-check-SUV" style="display:none">✓</span></div>
+  <div class="vp-option" onclick="setVehicle('Motorcycle')"><div class="vp-icon"><svg width="32" height="24" viewBox="0 0 40 28" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="20" r="6"/><circle cx="32" cy="20" r="6"/><path d="M8 20L20 8l12 12"/><line x1="17" y1="8" x2="23" y2="8"/></svg></div><span class="vp-name">Motorcycle / Boda</span><span class="vp-check" id="vp-check-Motorcycle" style="display:none">✓</span></div>
+  <div class="vp-option" onclick="setVehicle('Truck')"><div class="vp-icon"><svg width="32" height="24" viewBox="0 0 44 24" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="10" width="24" height="11" rx="2"/><path d="M26 12h10l4 6v3h-4"/><circle cx="9" cy="21" r="3"/><circle cx="33" cy="21" r="3"/></svg></div><span class="vp-name">Truck / Van</span><span class="vp-check" id="vp-check-Truck" style="display:none">✓</span></div>
+</div></div>
+<div id="toast"></div>
+<!-- GUEST SIGN-IN PROMPT -->
+<div id="guest-prompt" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;align-items:flex-end">
+  <div style="flex:1" onclick="closeGuestPrompt()"></div>
+  <div style="background:var(--white);border-radius:20px 20px 0 0;width:100%;padding:20px 20px max(24px,env(safe-area-inset-bottom));max-width:480px;margin:0 auto">
+    <div style="width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px"></div>
+    <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.3px">Sign in to book</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5">Create a free account to book parking, save favourites, and track your sessions.</div>
+    <button onclick="closeGuestPrompt();showScreen('screen-auth');switchAuthTab('signup')" style="width:100%;height:46px;background:var(--primary);border:none;border-radius:var(--r-lg);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">Create account →</button>
+    <button onclick="closeGuestPrompt();showScreen('screen-auth');switchAuthTab('login')" style="width:100%;height:44px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-lg);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Sign in</button>
+  </div>
+</div>
+<script>
+/* ══ API ══ */
+var API_BASE='https://parkwise-capstone-project-group4.onrender.com';
+
+/* ══ FACILITY DATA — loaded from PostgreSQL via /facilities ══ */
+window.parkingData = [];
+(function loadFacilities(){
+  fetch(API_BASE+'/facilities',{signal:AbortSignal.timeout(10000)})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(function(data){
+      window.parkingData = data;
+      if(typeof renderOverview==='function')renderOverview();
+      if(typeof renderSpaces==='function')renderSpaces(window.parkingData);
+      if(typeof renderMarkers==='function')renderMarkers();
+    })
+    .catch(function(err){
+      console.warn('[ParkWise] /facilities fetch failed, using fallback:',err);
+      window.parkingData=[
+        {facility_name_clean:'Engineers Board of Kenya',display_name:'Engineers Board of Kenya',latitude:-1.2918,longitude:36.8126,base_rate_kes:300,traffic_delay_index:1.0,operating_hours:'Mon-Fri 7AM-8PM',zone:'Zone I',category:'On-Street',tier:'tier1_cbd',overall_rating:4.2,estimated_capacity:21,security_score:4.1},
+        {facility_name_clean:'Jogoo House Car Park',display_name:'Jogoo House Car Park',latitude:-1.2865,longitude:36.8194,base_rate_kes:150,traffic_delay_index:1.2,operating_hours:'Mon-Fri 7AM-6PM',zone:'Zone I',category:'Off-Street / Dedicated Lot',overall_rating:4.0,estimated_capacity:200,security_score:4.5},
+        {facility_name_clean:'InterContinental Hotel Car Park',display_name:'InterContinental Hotel Car Park',latitude:-1.2871,longitude:36.8165,base_rate_kes:300,traffic_delay_index:2.6,operating_hours:'24/7',zone:'Zone I',category:'Off-Street / Dedicated Lot',overall_rating:4.5,estimated_capacity:150,security_score:4.8},
+        {facility_name_clean:'Parking Spot',display_name:'Near Haile Selassie Avenue',latitude:-1.2845,longitude:36.8212,base_rate_kes:200,traffic_delay_index:1.6,operating_hours:'24/7',zone:'Zone I',category:'On-Street',overall_rating:null,estimated_capacity:18,security_score:3.2},
+        {facility_name_clean:'Lavington Mall',display_name:'Lavington Mall',latitude:-1.2749,longitude:36.7766,base_rate_kes:300,traffic_delay_index:1.3,operating_hours:'24/7',zone:'Zone I',category:'On-Street',overall_rating:null,estimated_capacity:49,security_score:3.8}
+      ];
+      if(typeof renderOverview==='function')renderOverview();
+      if(typeof renderSpaces==='function')renderSpaces(window.parkingData);
+    });
+})();
+var GEMINI_KEY='__GEMINI_KEY_1__';
+var GEMINI_KEY2='__GEMINI_KEY_2__';
+var GEMINI_KEY3='__GEMINI_KEY_3__';
+var geminiCache={};
+var GEMINI_RATE_MS=4200;
+var _geminiLastCall=0;
+var _geminiQueue=[];
+var _geminiBusy=false;
+
+async function gemini(prompt){
+  // gemini-3.6-flash with personal key (key 1) works
+  // Other keys are depleted - skip them
+  try{
+    var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key='+GEMINI_KEY;
+    var controller=new AbortController();
+    var timer=setTimeout(function(){controller.abort()},7000); // 7s timeout
+    var res=await fetch(url,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        contents:[{parts:[{text:prompt}]}],
+        generationConfig:{temperature:0.4,maxOutputTokens:800}
+      }),
+      signal:controller.signal
+    });
+    clearTimeout(timer);
+    if(res.ok){
+      var data=await res.json();
+      if(data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts[0]){
+        console.log('Gemini OK');
+        return data.candidates[0].content.parts[0].text.trim();
+      }
+    }
+    var errData=await res.json().catch(function(){return{}});
+    console.log('Gemini status:',res.status,errData.error&&errData.error.message);
+  }catch(e){
+    if(e.name==='AbortError'){console.log('Gemini timed out');}
+    else{console.log('Gemini error:',e.message);}
+  }
+  return null;
+}
+var _snapshotCache=null;
+
+async function apiFetch(path){
+  try{
+    var res=await fetch(API_BASE+path,{signal:AbortSignal.timeout(8000)});
+    if(!res.ok)return null;
+    return await res.json();
+  }catch(e){return null}
+}
+
+/* ══ STATE ══ */
+var gMap,userLat=-1.2864,userLon=36.8175;
+var navActive=false,voiceMuted=false,sheetExpanded=true;
+var currentDest=null,currentDestLabel=null,currentFac=null,selectedFac=null;
+var selectedBay=null,timerInterval=null,slideConfirmed=false;
+var currentDuration=2,currentTimeTab='Today';
+var navDirectionsRenderer=null,navInfoWindow=null,navInterval=null;
+var markers=[];
+var previewLines=[];
+var navPolyline=null;
+var driveTimeCache={}; // key: lat+lon string -> {duration, distance}
+var osmMarkers=[]; // OSM markers separate from Nairobi markers
+var osmFacilities=[]; // OSM facility objects for card rendering
+var NAIROBI_BOUNDS={latMin:-1.45,latMax:-1.15,lonMin:36.65,lonMax:37.05};
+function inNairobi(lat,lon){return lat>=NAIROBI_BOUNDS.latMin&&lat<=NAIROBI_BOUNDS.latMax&&lon>=NAIROBI_BOUNDS.lonMin&&lon<=NAIROBI_BOUNDS.lonMax;}
+var PREFS=JSON.parse(localStorage.getItem('pw_prefs')||'{"vehicle":"Sedan","notif":true,"voice":true}');
+
+var DEST_PRESETS=[
+  {name:'Kenyatta National Hospital',meta:'Hospital Rd · 2.4 km',lat:-1.3017,lon:36.8073,icon:'HSP'},
+  {name:'KICC',meta:'City Square · 0.8 km',lat:-1.2879,lon:36.8219,icon:'GOV'},
+  {name:'Junction Mall',meta:'Ngong Rd · 5.1 km',lat:-1.3001,lon:36.7821,icon:'MLK'},
+  {name:'University of Nairobi',meta:'Harry Thuku Rd · 1.2 km',lat:-1.2796,lon:36.8165,icon:'UNI'},
+  {name:'Westgate Mall',meta:'Westlands · 4.8 km',lat:-1.2635,lon:36.8028,icon:'MLK'},
+  {name:'Nairobi Hospital',meta:'Argwings Kodhek Rd · 2.8 km',lat:-1.2971,lon:36.8165,icon:'HSP'},
+];
+
+/* ══ HELPERS ══ */
+function getName(f){
+  if(f.display_name&&f.display_name!==f.facility_name_clean&&!f.display_name.startsWith('Parking Spot'))return f.display_name;
+  if(f.facility_name_clean&&!f.facility_name_clean.startsWith('Parking Spot'))return f.facility_name_clean;
+  var z=f.zone||'Zone I';
+  var os=f.category&&f.category.includes('On-Street');
+  var area=f.latitude<-1.30?'Nairobi West':f.latitude<-1.29?'South CBD':f.latitude<-1.28?'CBD':f.latitude<-1.27?'Upper Hill':'Westlands';
+  return os?'On-street parking, '+area:z+' parking lot, '+area;
+}
+function haversine(a,b,c,d){var R=6371,dL=(c-a)*Math.PI/180,dN=(d-b)*Math.PI/180;var x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dN/2),2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
+function pressureClass(f){var p=f.parking_pressure_score||((f.traffic_delay_index||1)/3*100);return p>=90?'full':p>=75?'limited':'avail'}
+function pressureLabel(f){return{full:'Full',limited:'Limited',avail:'Available'}[pressureClass(f)]}
+function statusStyle(cls){return{avail:{bg:'var(--green-dim)',color:'var(--green-d)'},limited:{bg:'var(--amber-dim)',color:'#92400E'},full:{bg:'var(--red-dim)',color:'var(--red-d)'}}[cls]}
+function trafficLabel(f){var i=f.traffic_delay_index||1;return i>=2.5?{label:'Heavy traffic',color:'var(--red)'}:i>=1.8?{label:'Moderate',color:'var(--amber)'}:{label:'Clear',color:'var(--green)'}}
+function trafficBarHTML(f){var i=f.traffic_delay_index||1;var segs=i>=2.5?3:i>=1.8?2:1;var col=i>=2.5?'var(--red)':i>=1.8?'var(--amber)':'var(--green)';return[1,2,3].map(function(n){return '<div class="tb-seg" style="background:'+(n<=segs?col:'#E0E0E0')+'"></div>';}).join('')}
+function fracText(f){if(!f.estimated_capacity)return'';var cap=Math.round(f.estimated_capacity);var occ=Math.round(cap*(f.traffic_delay_index||1)/3);var free=Math.max(0,cap-occ);return free+'/'+cap+' free'}
+function ratingStars(r){if(!r)return'<span style="font-size:10px;color:var(--text3)">No ratings yet</span>';var full=Math.floor(r);var s='★'.repeat(full)+'☆'.repeat(5-full);return'<span style="color:var(--accent);font-size:12px">'+s+'</span><span style="font-size:9px;color:var(--text3);margin-left:3px">'+r.toFixed(1)+'</span>'}
+function safeBadge(f){var s=f.security_score||0;if(s>=4.5)return'<span style="font-size:9px;color:var(--green-d)">Staffed &amp; CCTV</span>';if(s>=3.5)return'<span style="font-size:9px;color:var(--green-d)">Attended</span>';if(s>0)return'<span style="font-size:9px;color:var(--amber)">Unattended</span>';return''}
+function getOpenStatus(f){
+  var h=f.operating_hours||f.operating_schedule||'';
+  if(!h||h==='24/7'||h==='Clear'||h==='-'||h.length<3)return{open:true,label:'Open 24/7',color:'var(--green-d)',bg:'var(--green-dim)'};
+  var now=new Date();var day=now.getDay();var hr=now.getHours();
+  var isWeekday=day>=1&&day<=5;var isSat=day===6;
+  if(h.includes('Mon-Fri')&&!isWeekday)return{open:false,label:'Closed today',color:'var(--red-d)',bg:'var(--red-dim)'};
+  var m=h.match(/(\d+)(?::(\d+))?\s*(AM|PM)/gi);
+  if(m&&m.length>=2){
+    var parseT=function(t){var p=t.match(/(\d+)(?::(\d+))?\s*(AM|PM)/i);if(!p)return 0;var hh=parseInt(p[1]);var mm=parseInt(p[2]||0);if(p[3].toUpperCase()==='PM'&&hh!==12)hh+=12;if(p[3].toUpperCase()==='AM'&&hh===12)hh=0;return hh*60+mm;};
+    var open=parseT(m[0]);var close=parseT(m[1]);var cur=hr*60+now.getMinutes();
+    if(cur>=open&&cur<close){var left=Math.round((close-cur)/60);return{open:true,label:left<=2?'Closes in '+left+'h':'Open now',color:'var(--green-d)',bg:'var(--green-dim)'};}
+    return{open:false,label:'Closed · Opens '+m[0],color:'var(--red-d)',bg:'var(--red-dim)'};
+  }
+  return{open:true,label:'Open now',color:'var(--green-d)',bg:'var(--green-dim)'};
+}
+
+var _toastT;
+function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(_toastT);_toastT=setTimeout(function(){t.style.display='none'},3600)}
+
+/* ══ ONBOARDING ══ */
+function finishOnboard(){localStorage.setItem('pw_onboarded','1');showScreen('screen-auth')}
+
+/* ══ SCREEN ══ */
+function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById(id).classList.add('active')}
+
+window.addEventListener('DOMContentLoaded',function(){
+  // Splash screen — show for 1.2 seconds then route
+  // Route on load
+  var saved=localStorage.getItem('pw_user');
+  if(saved){try{var u=JSON.parse(saved);enterApp(u.name,u.email)}catch(e){localStorage.removeItem('pw_user');showScreen('screen-onboard')}}
+  else{showScreen('screen-onboard')}
+  applyThemeOnLoad();
+  // Populate onboarding stats
+  if(typeof parkingData!=='undefined'&&parkingData.length){
+    var avail=parkingData.filter(function(f){return pressureClass(f)==='avail'}).length;
+    var lim=parkingData.filter(function(f){return pressureClass(f)==='limited'}).length;
+    var full=parkingData.filter(function(f){return pressureClass(f)==='full'}).length;
+    var a=document.getElementById('ob-avail');var l=document.getElementById('ob-limited');var fu=document.getElementById('ob-full');
+    if(a)a.textContent=avail;if(l)l.textContent=lim;if(fu)fu.textContent=full;
+  }
+  buildDestSuggestions();
+  buildFilterChips();
+  buildChart('day');
+});
+
+/* ══ AUTH ══ */
+function switchAuthTab(t){
+  document.querySelectorAll('.auth-tab').forEach(function(e){e.classList.remove('active')});
+  document.querySelectorAll('.auth-form').forEach(function(e){e.classList.remove('active')});
+  document.getElementById('tab-'+t+'-btn').classList.add('active');
+  document.getElementById('form-'+t).classList.add('active');
+}
+function showErr(id,m){var e=document.getElementById(id);e.textContent=m;e.style.display='block'}
+function clearErr(id){document.getElementById(id).style.display='none'}
+function doSignup(){
+  clearErr('su-err');
+  var n=document.getElementById('su-name').value.trim();
+  var e=document.getElementById('su-email').value.trim();
+  var p=document.getElementById('su-pass').value;
+  if(!n)return showErr('su-err','Enter your name.');
+  if(!e.includes('@'))return showErr('su-err','Enter a valid email.');
+  if(p.length<6)return showErr('su-err','Password must be at least 6 characters.');
+  // Save to database, enter app regardless of outcome
+  fetch(API_BASE+'/users',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:e,password_hash:p,is_guest:false}),
+    signal:AbortSignal.timeout(6000)
+  }).then(function(r){return r.json();}).then(function(data){
+    localStorage.setItem('pw_user',JSON.stringify({name:n,email:e,user_id:data.id}));
+  }).catch(function(){
+    localStorage.setItem('pw_user',JSON.stringify({name:n,email:e}));
+  });
+  enterApp(n,e);
+}
+function doLogin(){
+  clearErr('li-err');
+  var e=document.getElementById('li-email').value.trim();
+  var p=document.getElementById('li-pass').value;
+  if(!e.includes('@'))return showErr('li-err','Enter a valid email.');
+  if(!p)return showErr('li-err','Enter your password.');
+  var n=e.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase()});
+  // Save to database, enter app regardless of outcome
+  fetch(API_BASE+'/users',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:e,password_hash:p,is_guest:false}),
+    signal:AbortSignal.timeout(6000)
+  }).then(function(r){return r.json();}).then(function(data){
+    localStorage.setItem('pw_user',JSON.stringify({name:n,email:e,user_id:data.id}));
+  }).catch(function(){
+    localStorage.setItem('pw_user',JSON.stringify({name:n,email:e}));
+  });
+  enterApp(n,e);
+}
+function doGoogle(){var n='Alex Kamau',e='alex.kamau@parkwise.co.ke';localStorage.setItem('pw_user',JSON.stringify({name:n,email:e}));enterApp(n,e)}
+function doSignOut(){
+  if(!confirm('Sign out of ParkWise?'))return;
+  localStorage.removeItem('pw_user');
+  localStorage.removeItem('pw_active_session');
+  localStorage.removeItem('pw_sessions');
+  localStorage.removeItem('pw_prefs');
+  localStorage.removeItem('pw_onboarded');
+  clearInterval(timerInterval);
+  showScreen('screen-onboard');
+}
+
+var isGuest=false;
+function enterGuest(){
+  isGuest=true;
+  showScreen('screen-app');
+  renderOverview();renderSpaces(parkingData);renderBookings();
+  switchTab('map',document.getElementById('nav-map'));
+  if(typeof google!=='undefined'&&google.maps)setupMap();
+  // Set guest greeting
+  document.getElementById('ov-greet').textContent='Welcome to ParkWise';
+}
+function closeGuestPrompt(){document.getElementById('guest-prompt').style.display='none'}
+function showGuestPrompt(){var el=document.getElementById('guest-prompt');el.style.display='flex'}
+
+function enterApp(name,email){
+  isGuest=false;
+  showScreen('screen-app');applyProfile(name,email);
+  renderOverview();renderSpaces(parkingData);renderBookings();
+  switchTab('map',document.getElementById('nav-map'));
+  if(typeof google!=='undefined'&&google.maps)setupMap();
+}
+function applyProfile(name,email){
+  var ini=name.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase();
+  document.getElementById('set-avatar').textContent=ini;
+  document.getElementById('set-name').textContent=name;
+  document.getElementById('set-email').textContent=email;
+  var h=new Date().getHours();
+  document.getElementById('ov-greet').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+', '+name.split(' ')[0];
+}
+
+/* ══ TAB SWITCHING ══ */
+function switchTab(tab,el){
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('#bottom-nav .ni').forEach(function(n){n.classList.remove('active')});
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(el)el.classList.add('active');
+  if(tab==='map'){
+    if(gMap&&typeof google!=='undefined'){
+      setTimeout(function(){google.maps.event.trigger(gMap,'resize')},60);
+    }
+  }
+}
+
+/* ══ GOOGLE MAP ══ */
+function initGoogleMap(){setupMap()}
+function setupMap(){
+  if(gMap)return;
+  if(typeof google==='undefined'||!google.maps){setTimeout(setupMap,500);return}
+  var center={lat:userLat,lng:userLon};
+  gMap=new google.maps.Map(document.getElementById('google-map'),{
+    center:center,zoom:15,
+    disableDefaultUI:true,
+    styles:[
+      {featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},
+      {featureType:'transit',elementType:'labels',stylers:[{visibility:'off'}]},
+      {featureType:'road',elementType:'geometry',stylers:[{color:'#ffffff'}]},
+      {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#fafafa'}]},
+      {featureType:'water',elementType:'geometry',stylers:[{color:'#C9E8F7'}]},
+      {featureType:'landscape',elementType:'geometry',stylers:[{color:'#F0F4F0'}]},
+    ]
+  });
+  // User marker
+  new google.maps.Marker({position:center,map:gMap,icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#1565C0',fillOpacity:1,strokeColor:'#fff',strokeWeight:3},zIndex:100});
+  // Apply saved theme to map now that it's initialized
+  var savedTheme=localStorage.getItem('pw_theme')||'system';
+  var isDark=savedTheme==='dark'||(savedTheme==='system'&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  if(isDark)gMap.setOptions({styles:DARK_MAP_STYLE});
+  // Geolocation
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      userLat=pos.coords.latitude;userLon=pos.coords.longitude;
+      gMap.setCenter({lat:userLat,lng:userLon});
+      if(!inNairobi(userLat,userLon)){
+        showToast('Outside Nairobi. Loading nearby parking data…');
+        queryOSM(userLat,userLon);
+      }
+    });
+  }
+  addAllMarkers();
+  checkAnomaly();
+  refreshNearby(userLat,userLon);
+  // Places autocomplete
+  var input=document.getElementById('dest-input');
+  if(input&&google.maps.places){
+    var ac=new google.maps.places.Autocomplete(input,{
+      componentRestrictions:{country:'ke'},
+      fields:['geometry','name','formatted_address']
+    });
+    ac.addListener('place_changed',function(){
+      var place=ac.getPlace();
+      if(place.geometry){
+        currentDest={name:place.name,lat:place.geometry.location.lat(),lon:place.geometry.location.lng()};
+        document.getElementById('dest-sec-lbl').textContent='Selected destination';
+      }
+    });
+  }
+}
+
+function addAllMarkers(){
+  // Show only top 15 nearest spots by default — clean, not overwhelming
+  var withDist=parkingData.map(function(f){
+    return Object.assign({},f,{_dist:haversine(userLat,userLon,f.latitude,f.longitude)});
+  });
+  var subset=withDist.sort(function(a,b){return a._dist-b._dist}).slice(0,15);
+  subset.forEach(function(f){addSingleMarker(f)});
+  // Strict top 15 — no expansion on zoom/drag
+}
+function addSingleMarker(f){
+  // Check not already added
+  if(markers.find(function(m){return m.fac.latitude===f.latitude&&m.fac.longitude===f.longitude}))return;
+  var cls=pressureClass(f);
+  var col=cls==='avail'?'#2D9D5C':cls==='limited'?'#D97706':'#DC2626';
+  var strokeCol=cls==='avail'?'#065F46':cls==='limited'?'#92400E':'#991B1B';
+  var price=f.base_rate_kes?'KES '+Math.round(f.base_rate_kes):'Free';
+  // Single combined text: "P · KES 200" — no overlap possible
+  var label='P · '+price;
+  var w=Math.max(70, label.length*7+16);
+  var totalW=w+2;
+  var cx=totalW/2;
+  var svgStr='<svg xmlns="http://www.w3.org/2000/svg" width="'+totalW+'" height="28">'+
+    '<rect x="1" y="1" width="'+w+'" height="22" rx="11" fill="'+col+'" stroke="'+strokeCol+'" stroke-width="1.5"/>'+
+    '<text x="'+(totalW/2)+'" y="12" text-anchor="middle" dominant-baseline="central" font-size="9.5" font-weight="700" fill="white" font-family="Inter,Arial,sans-serif">'+label+'</text>'+
+    '<polygon points="'+(cx-3)+',22 '+(cx+3)+',22 '+cx+',28" fill="'+col+'"/>'+
+    '</svg>';
+  var encoded='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svgStr);
+  var mk=new google.maps.Marker({
+    position:{lat:f.latitude,lng:f.longitude},map:gMap,
+    icon:{url:encoded,scaledSize:new google.maps.Size(w+2,30),anchor:new google.maps.Point((w+2)/2,30)},
+    title:getName(f)+' · '+price+'/hr',
+    zIndex:cls==='avail'?3:cls==='limited'?2:1
+  });
+  mk.addListener('click',function(){
+    openDetail(f);showRoutePreview(f);
+    // Sync bottom sheet
+    syncSheetToFacility(f);
+  });
+  markers.push({marker:mk,fac:f});
+}
+function expandMarkers(){
+  // Add more spots when zoomed in
+  var withDist=parkingData.map(function(f){return Object.assign({},f,{_dist:haversine(userLat,userLon,f.latitude,f.longitude)})});
+  withDist.sort(function(a,b){return a._dist-b._dist}).slice(0,25).forEach(function(f){addSingleMarker(f)});
+}
+function expandMarkersInView(){
+  if(!gMap)return;
+  var bounds=gMap.getBounds();if(!bounds)return;
+  parkingData.forEach(function(f){
+    var pos=new google.maps.LatLng(f.latitude,f.longitude);
+    if(bounds.contains(pos))addSingleMarker(f);
+  });
+}
+function syncSheetToFacility(f){
+  // Scroll bottom sheet card for this facility into view
+  var scroll=document.getElementById('cards-scroll');if(!scroll)return;
+  var cards=scroll.querySelectorAll('.park-card');
+  cards.forEach(function(card,i){
+    var name=card.querySelector('.pc-name');
+    if(name&&name.textContent===getName(f)){
+      card.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+      card.classList.add('selected');
+    }
+  });
+}
+
+function checkAnomaly(){
+  var avg=parkingData.reduce(function(s,f){return s+(f.traffic_delay_index||1)},0)/parkingData.length;
+  if(avg>1.9)document.getElementById('anomaly-banner').classList.add('show');
+}
+
+/* ══ NEARBY CARDS ══ */
+function refreshNearby(lat,lon){
+  var withDist=parkingData.map(function(f){return Object.assign({},f,{_dist:haversine(lat,lon,f.latitude,f.longitude)})});
+  var nearby=withDist.sort(function(a,b){return a._dist-b._dist}).slice(0,15);
+  document.getElementById('sheet-count').textContent=nearby.length+' spots';
+  document.getElementById('sheet-mini-label').textContent=nearby.length+' spots nearby';
+  var scroll=document.getElementById('cards-scroll');scroll.innerHTML='';
+  nearby.forEach(function(f,i){
+    var cls=pressureClass(f);var ss=statusStyle(cls);
+    var distM=Math.round(f._dist*1000);
+    var dist=distM<1000?distM+'m':f._dist.toFixed(1)+'km';
+    var tl=trafficLabel(f);
+    var isSel=selectedFac&&selectedFac.latitude===f.latitude&&selectedFac.longitude===f.longitude;
+    var ti=f.traffic_delay_index||1;var segs=ti>=2.5?3:ti>=1.8?2:1;var tcol=ti>=2.5?'var(--red)':ti>=1.8?'var(--amber)':'var(--green)';
+    var tbHTML=[1,2,3].map(function(n){return '<div class="pc-tb-seg" style="background:'+(n<=segs?tcol:'#E0E0E0')+'"></div>';}).join('');
+    var btnText=cls==='full'?'Not available':isSel?'Route active ✓':'Show route →';
+    var btnCls='pc-btn '+(cls==='full'?'full-btn':isSel?'route-shown':'show-route');
+    var card=document.createElement('div');
+    card.className='park-card '+cls+(isSel?' selected':'');
+    card.innerHTML='<div class="pc-name">'+getName(f)+'</div>'+
+      '<div class="pc-price">KES '+Math.round(f.base_rate_kes||150)+'<span class="pc-unit">/hr</span></div>'+
+      '<div class="pc-dist">'+dist+' away</div>'+
+      '<div class="pc-tags"><span class="pc-tag '+(cls==='avail'?'g':cls==='limited'?'a':'r')+'">'+pressureLabel(f)+'</span><span class="pc-tag n">'+(f.zone||'Zone I')+'</span></div>'+
+      '<div class="pc-traffic">'+tbHTML+'<span class="pc-traffic-lbl" style="color:'+tl.color+'">'+tl.label+'</span></div>'+
+      '<button class="'+btnCls+'">'+btnText+'</button>';
+    card.onclick=function(e){
+      if(e.target.tagName==='BUTTON'&&cls!=='full'){handleCardSelect(f,card)}
+      else if(cls!=='full'&&e.target.tagName!=='BUTTON')openDetail(f);
+    };
+    scroll.appendChild(card);
+    if(i===0&&cls!=='full')handleCardSelect(f,card);
+  });
+
+  // Add OSM cards after Nairobi cards
+  if(osmMarkers&&osmMarkers.length){
+    osmMarkers.forEach(function(mk){
+      var f=mk.fac||null;
+      // osmMarkers don't store fac directly - use title and position
+    });
+  }
+  // OSM cards from osmFacilities array
+  if(typeof osmFacilities!=='undefined'&&osmFacilities.length){
+    osmFacilities.forEach(function(f){
+      var distM=Math.round(haversine(lat,lon,f.latitude,f.longitude)*1000);
+      var dist=distM<1000?distM+'m':(distM/1000).toFixed(1)+'km';
+      var card=document.createElement('div');card.className='park-card';
+      card.innerHTML=
+        '<div class="pc-top"><div class="pc-name">'+f.facility_name_clean+'</div>'+
+        '<div class="pc-badge" style="background:#F3F4F6;color:#6B7280">OSM</div></div>'+
+        '<div class="pc-dist">'+dist+' away</div>'+
+        '<div class="pc-meta"><span style="color:#6B7280">Community mapped</span> · '+(f.priceLabel||'Price unknown')+'</div>';
+      card.onclick=function(){openOSMDetail(f)};
+      scroll.appendChild(card);
+    });
+  }
+
+  // Fire Directions API for top 5 — update cards with real drive time + distance
+  if(typeof google!=='undefined'&&google.maps&&google.maps.DirectionsService){
+    var top5=nearby.slice(0,5);
+    top5.forEach(function(f){
+      var cacheKey=f.latitude.toFixed(5)+','+f.longitude.toFixed(5);
+      if(driveTimeCache[cacheKey]){
+        updateCardDriveTime(f,driveTimeCache[cacheKey].duration,driveTimeCache[cacheKey].distance);
+        return;
+      }
+      var ds=new google.maps.DirectionsService();
+      ds.route({
+        origin:{lat:userLat,lng:userLon},
+        destination:{lat:f.latitude,lng:f.longitude},
+        travelMode:google.maps.TravelMode.DRIVING,
+        drivingOptions:{departureTime:new Date(),trafficModel:'bestguess'}
+      },function(result,status){
+        if(status!=='OK')return;
+        var leg=result.routes[0].legs[0];
+        var dur=leg.duration_in_traffic?leg.duration_in_traffic.text:leg.duration.text;
+        var dist=leg.distance.text;
+        driveTimeCache[cacheKey]={duration:dur,distance:dist};
+        updateCardDriveTime(f,dur,dist);
+      });
+    });
+  }
+}
+function updateCardDriveTime(f,duration,distance){
+  var scroll=document.getElementById('cards-scroll');
+  if(!scroll)return;
+  var cards=scroll.querySelectorAll('.park-card');
+  cards.forEach(function(card){
+    var nameEl=card.querySelector('.pc-name');
+    if(nameEl&&nameEl.textContent===getName(f)){
+      var distEl=card.querySelector('.pc-dist');
+      if(distEl)distEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-right:3px;vertical-align:middle"><rect x="1" y="10" width="22" height="10" rx="2"/><path d="M5 10V7a1 1 0 011-1h12a1 1 0 011 1v3"/><circle cx="7" cy="20" r="2"/><circle cx="17" cy="20" r="2"/></svg><strong>'+duration+'</strong> · '+distance;
+    }
+  });
+}
+function handleCardSelect(f,card){
+  selectedFac=f;
+  document.querySelectorAll('.park-card').forEach(function(c){
+    c.classList.remove('selected');
+    var btn=c.querySelector('.pc-btn');
+    if(btn&&!btn.classList.contains('full-btn')){btn.className='pc-btn show-route';btn.textContent='Show route →'}
+  });
+  card.classList.add('selected');
+  var btn=card.querySelector('.pc-btn');
+  if(btn){btn.className='pc-btn route-shown';btn.textContent='Route active ✓'}
+  showRoutePreview(f);
+  if(gMap)gMap.panTo({lat:f.latitude,lng:f.longitude});
+}
+
+/* ══ ROUTE PREVIEW ══ */
+var previewPoly=null;
+function showRoutePreview(f){
+  if(!gMap||typeof google==='undefined')return;
+  clearPreviewRoute();
+  if(pressureClass(f)==='full')return;
+  markers.forEach(function(m){
+    var isDest=m.fac.latitude===f.latitude&&m.fac.longitude===f.longitude;
+    if(!isDest){
+      var mc=pressureClass(m.fac);
+      var mcol=mc==='avail'?'#2D9D5C':mc==='limited'?'#D97706':'#DC2626';
+      var mscol=mc==='avail'?'#065F46':mc==='limited'?'#92400E':'#991B1B';
+      var miniSvg='<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect x="1" y="1" width="18" height="14" rx="7" fill="'+mcol+'" stroke="'+mscol+'" stroke-width="1.2"/><text x="10" y="10" text-anchor="middle" dominant-baseline="central" font-size="7" font-weight="800" fill="white" font-family="Inter,Arial,sans-serif">P</text><polygon points="8,14 12,14 10,19" fill="'+mcol+'"/></svg>';
+      m.marker.setIcon({url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(miniSvg),scaledSize:new google.maps.Size(20,20),anchor:new google.maps.Point(10,19)});
+      m._shrunk=true;
+    }
+  });
+  var ds=new google.maps.DirectionsService();
+  ds.route({
+    origin:{lat:userLat,lng:userLon},
+    destination:{lat:f.latitude,lng:f.longitude},
+    travelMode:google.maps.TravelMode.DRIVING
+  },function(result,status){
+    if(status!=='OK')return;
+    // Draw teal polyline directly — no renderer needed
+    var path=result.routes[0].overview_path;
+    var line=new google.maps.Polyline({
+      path:path,
+      map:gMap,
+      strokeColor:'#0D9488',
+      strokeWeight:5,
+      strokeOpacity:0.92,
+      zIndex:10
+    });
+    previewLines.push(line);
+    // Also draw a wider semi-transparent shadow for visibility
+    var shadow=new google.maps.Polyline({
+      path:path,
+      map:gMap,
+      strokeColor:'#0D9488',
+      strokeWeight:14,
+      strokeOpacity:0.15,
+      zIndex:9
+    });
+    previewLines.push(shadow);
+  });
+}
+function clearPreviewRoute(){
+  previewLines.forEach(function(l){l.setMap(null)});
+  previewLines=[];previewPoly=null;
+  if(navPolyline){navPolyline.setMap(null);navPolyline=null}
+  markers.forEach(function(m){
+    if(m._shrunk&&m.fac){
+      m._shrunk=false;
+      var cls=pressureClass(m.fac);
+      var col=cls==='avail'?'#2D9D5C':cls==='limited'?'#D97706':'#DC2626';
+      var sCol=cls==='avail'?'#065F46':cls==='limited'?'#92400E':'#991B1B';
+      var price=m.fac.base_rate_kes?'KES '+Math.round(m.fac.base_rate_kes):'Free';
+      var w=price.length*6.5+28;
+      var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+(w+2)+'" height="28"><rect x="1" y="1" width="'+w+'" height="22" rx="11" fill="'+col+'" stroke="'+sCol+'" stroke-width="1.5"/><text x="'+(w/2+1)+'" y="14" text-anchor="middle" font-size="10" font-weight="700" fill="white" font-family="Inter,Arial,sans-serif">P %C2%B7 '+price+'</text><polygon points="'+(w/2-2+1)+',22 '+(w/2+2+1)+',22 '+(w/2+1)+',28" fill="'+col+'"/></svg>';
+      m.marker.setIcon({url:'data:image/svg+xml;charset=UTF-8,'+svg,scaledSize:new google.maps.Size(w+2,28),anchor:new google.maps.Point((w+2)/2,28)});
+    }
+  });
+}
+
+/* ══ SHEET ══ */
+function toggleSheet(){
+  sheetExpanded=!sheetExpanded;
+  var sheet=document.getElementById('bottom-sheet');
+  var mini=document.getElementById('sheet-mini-bar');
+  var top=document.getElementById('sheet-top');
+  var cards=document.getElementById('sheet-cards');
+  var btn=document.getElementById('sheet-toggle-btn');
+  var sb=document.getElementById('smart-btn');
+  if(sheetExpanded){
+    sheet.classList.remove('mini');sheet.style.height='var(--sheet-full)';
+    mini.classList.remove('show');top.style.display='';cards.style.display='';
+    btn.textContent='Hide ↓';sb.classList.remove('mini');
+  }else{
+    sheet.style.height='var(--sheet-mini)';sheet.classList.add('mini');
+    mini.classList.add('show');top.style.display='none';cards.style.display='none';
+    sb.classList.add('mini');
+  }
+}
+
+/* ══ DESTINATION ══ */
+function buildDestSuggestions(){
+  var c=document.getElementById('dest-suggestions');if(!c)return;
+  c.innerHTML=DEST_PRESETS.map(function(d){
+    return '<div class="dm-row" onclick="selectPreset('+JSON.stringify(d).replace(/"/g,"'")+')">'+'<div class="dm-row-icon">'+d.icon+'</div><div><div class="dm-row-name">'+d.name+'</div><div class="dm-row-meta">'+d.meta+'</div></div></div>';
+  }).join('');
+}
+function selectPreset(d){currentDest=d;document.getElementById('dest-input').value=d.name}
+function onDestInput(v){
+  if(!v){currentDest=null;document.getElementById('dest-sec-lbl').textContent='Popular destinations';buildDestSuggestions();return}
+  document.getElementById('dest-sec-lbl').textContent='Suggestions';
+  // Filter presets + facility names
+  var matches=DEST_PRESETS.filter(function(d){return d.name.toLowerCase().includes(v.toLowerCase())});
+  var facMatches=parkingData.filter(function(f){return getName(f).toLowerCase().includes(v.toLowerCase())}).slice(0,4).map(function(f){return{name:getName(f),meta:f.zone+' · '+pressureLabel(f),lat:f.latitude,lon:f.longitude,icon:'PKG'}});
+  var all=matches.concat(facMatches).slice(0,6);
+  var c=document.getElementById('dest-suggestions');
+  if(!all.length){c.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px 0">No matches — try a landmark or road name</div>';return}
+  c.innerHTML=all.map(function(d){
+    return '<div class="dm-row" onclick="selectPreset('+JSON.stringify(d).replace(/"/g,"'")+')">'+'<div class="dm-row-icon">'+d.icon+'</div><div><div class="dm-row-name">'+d.name+'</div><div class="dm-row-meta">'+d.meta+'</div></div></div>';
+  }).join('');
+}
+function openDestModal(){document.getElementById('dest-modal').classList.add('open')}
+function closeDestModal(){document.getElementById('dest-modal').classList.remove('open')}
+function applyDest(){
+  if(!currentDest){showToast('Pick a destination first');return}
+  closeDestModal();currentDestLabel=currentDest.name;
+  var dv=document.getElementById('dest-value');dv.textContent=currentDestLabel;dv.classList.add('set');
+  document.getElementById('dest-bar').classList.add('has-dest');
+  document.getElementById('dest-clear').classList.add('show');
+  if(gMap)gMap.panTo({lat:currentDest.lat,lng:currentDest.lng||currentDest.lon});
+  refreshNearby(currentDest.lat,currentDest.lng||currentDest.lon);
+  switchTab('map',document.getElementById('nav-map'));
+  showToast('Showing parking near '+currentDestLabel);
+}
+function clearDest(e){
+  e.stopPropagation();currentDest=null;currentDestLabel=null;
+  var dv=document.getElementById('dest-value');dv.textContent='Enter a destination';dv.classList.remove('set');
+  document.getElementById('dest-bar').classList.remove('has-dest');
+  document.getElementById('dest-clear').classList.remove('show');
+  if(previewPoly){previewPoly.setMap(null);previewPoly=null}
+  if(gMap)gMap.panTo({lat:userLat,lng:userLon});
+  refreshNearby(userLat,userLon);selectedFac=null;
+}
+
+/* ══ DETAIL POPUP ══ */
+function openDetail(f){
+  currentFac=f;
+  var cls=pressureClass(f);var ss=statusStyle(cls);var tl=trafficLabel(f);
+  var cap=f.estimated_capacity?Math.round(f.estimated_capacity):null;
+  var pressure=f.parking_pressure_score||((f.traffic_delay_index||1)/3*100);
+  if(!cap){cap=10;}
+  var occ=Math.round(cap*Math.min(pressure/100,0.98));
+  var free=Math.max(0,cap-occ);
+  var os=f.category&&f.category.includes('On-Street');
+  var openSt=getOpenStatus(f);
+
+  // Sentiment
+  var avail=Math.round(Math.max(20,100-(f.traffic_delay_index||1)*25));
+  var safety=f.security_score?Math.round(f.security_score/5*100):60;
+  var price=f.base_rate_kes<=150?85:f.base_rate_kes<=250?65:45;
+  var attend=f.security_score>=4?78:f.security_score>=3?55:35;
+  var sents=[['Availability',avail,'var(--green)'],['Safety',safety,'var(--green)'],['Price',price,price>60?'var(--green)':'var(--amber)'],['Attendants',attend,attend>60?'var(--green)':'var(--red)']];
+  var sentHTML=sents.map(function(s){
+    return '<div class="sent-row"><span class="sent-name">'+s[0]+'</span><div class="sent-track"><div class="sent-fill" style="width:'+s[1]+'%;background:'+s[2]+'"></div></div><span class="sent-pct">'+s[1]+'%</span></div>';
+  }).join('');
+
+  // AI demand bars
+  var basePress=Math.round(f.parking_pressure_score||((f.traffic_delay_index||1)/3*100));
+  var curve=[0.46,0.70,0.90,1.0,0.85,0.95,0.70,0.58,0.41];
+  var hrs=[6,8,10,12,14,16,18,20,22];
+  var demandBars=hrs.map(function(h,i){
+    var p=Math.min(98,Math.round(basePress*curve[i]));
+    var col=p>70?'var(--red)':p>50?'var(--amber)':'var(--green)';
+    return '<div class="pb" style="height:'+p+'%;background:'+col+'"></div>';
+  }).join('');
+  var barLbls=hrs.map(function(h){return '<div class="predict-bar-lbl">'+(h<12?h+'a':h===12?'12p':(h-12)+'p')+'</div>';}).join('');
+  // Async update from API
+  apiFetch('/predict/demand?lat='+f.latitude+'&lon='+f.longitude+(f.osm_id?'&facility_id='+f.osm_id:'')).then(function(data){
+    if(!data||!data.predictions)return;
+    var el=document.getElementById('demand-bars-inner');
+    if(!el)return;
+    el.innerHTML=data.predictions.map(function(p){
+      var pct=Math.min(98,Math.round(p.pressure));
+      var col=pct>70?'var(--red)':pct>50?'var(--amber)':'var(--green)';
+      return '<div class="pb" style="height:'+pct+'%;background:'+col+'"></div>';
+    }).join('');
+  }).catch(function(){});
+
+  // Bay pills
+  var totalBays=Math.min(cap||8,12);
+  var takenBays=occ?Math.min(occ,totalBays):Math.round(totalBays*.35);
+  var bayLabels=['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11','P12'].slice(0,totalBays);
+  var takenSet=new Set();while(takenSet.size<takenBays){takenSet.add(Math.floor(Math.random()*totalBays))}
+  var bayHTML=bayLabels.map(function(lbl,i){
+    var taken=takenSet.has(i);
+    return '<div class="bay-pill '+(taken?'taken':'free')+'" data-lbl="'+lbl+'" id="bay-'+i+'"><div class="bay-dot"></div>'+lbl+'</div>';
+  }).join('');
+
+  // Photo SVG
+  var photoSVG=os
+    ?'<svg width="80" height="72" viewBox="0 0 80 72" fill="none"><rect width="80" height="72" rx="12" fill="#1B4332"/><line x1="0" y1="36" x2="80" y2="36" stroke="rgba(255,255,255,.2)" stroke-width="4"/><line x1="40" y1="0" x2="40" y2="72" stroke="rgba(255,255,255,.15)" stroke-width="2"/><rect x="8" y="8" width="14" height="22" rx="3" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.2)" stroke-width="1"/><rect x="28" y="8" width="14" height="22" rx="3" fill="rgba(245,158,11,.3)" stroke="#F59E0B" stroke-width="1.5"/><rect x="48" y="8" width="14" height="22" rx="3" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.2)" stroke-width="1"/><rect x="8" y="42" width="14" height="22" rx="3" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.2)" stroke-width="1"/><rect x="28" y="42" width="14" height="22" rx="3" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.2)" stroke-width="1"/><circle cx="62" cy="52" r="10" fill="#2D9D5C" opacity=".9"/><text x="62" y="56" text-anchor="middle" font-size="11" font-weight="900" fill="#fff" font-family="Inter,sans-serif">P</text></svg>'
+    :'<svg width="80" height="72" viewBox="0 0 80 72" fill="none"><rect width="80" height="72" rx="12" fill="#2D6A4F"/><rect x="15" y="20" width="50" height="42" rx="3" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.2)" stroke-width="1"/><rect x="20" y="14" width="40" height="10" rx="2" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.15)" stroke-width="1"/><rect x="25" y="36" width="12" height="10" rx="2" fill="rgba(255,255,255,.2)"/><rect x="43" y="36" width="12" height="10" rx="2" fill="rgba(255,255,255,.2)"/><rect x="32" y="50" width="16" height="12" rx="2" fill="rgba(245,158,11,.6)"/><text x="40" y="44" text-anchor="middle" font-size="10" font-weight="800" fill="#F59E0B" font-family="Inter,sans-serif">P</text></svg>';
+
+  document.getElementById('detail-inner').innerHTML=
+    '<div class="det-handle"></div>'+
+    '<div class="det-photo" style="background:var(--primary);display:flex;align-items:center;justify-content:center">'+photoSVG+'</div>'+
+    '<div class="det-header"><div class="det-name">'+getName(f)+'</div>'+
+    '<button class="det-close" onclick="closeDetail()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'+
+    '<div class="det-addr"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> '+(f.zone||'Zone I')+' · '+(os?'On-street':'Off-street')+'</div>'+
+    '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">'+ratingStars(f.overall_rating)+' <span class="open-badge" style="background:'+openSt.bg+';color:'+openSt.color+';font-size:9px;font-weight:700;border-radius:5px;padding:2px 8px">'+openSt.label+'</span> '+safeBadge(f)+'</div>'+
+    '<div class="det-status-badge" id="det-status-badge" style="background:'+ss.bg+';color:'+ss.color+'">'+(cls==='full'?'Full · No space available':cls==='limited'?'Limited · Few spaces left':'Available · Good to go')+'</div>'+
+    '<div id="cnn-sat-badge" style="display:none;font-size:10px;font-weight:600;color:var(--primary);background:var(--primary-faint);border:1px solid var(--primary-dim);border-radius:var(--r-pill);padding:5px 12px;margin-bottom:10px;line-height:1.4"></div>'+
+    '<div class="det-actions" style="margin-bottom:12px">'+
+      '<div style="display:flex;gap:8px">'+
+        '<button class="det-action-btn" style="flex:1;background:var(--primary-dim);color:var(--primary);border:1.5px solid rgba(27,67,50,.15);font-weight:700;font-size:12px" onclick="closeDetail();goToMapAndRoute()">'+
+          '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:4px"><path d="M3 12h18M3 6h18M3 18h18"/></svg>Show route</button>'+
+        '<button class="det-action-btn" style="flex:1;background:var(--accent);color:#111;font-weight:700;font-size:12px" onclick="closeDetail();goToMapAndNavigate()">'+
+          '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:4px"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>Navigate</button>'+
+      '</div>'+
+      '<button class="det-action-btn" style="background:var(--primary);color:#fff;font-weight:700" onclick="closeDetail();openBookingPopup(currentFac)">'+
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:5px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Book &amp; navigate</button>'+
+    '</div>'+
+    '<div class="det-grid">'+
+      '<div class="det-cell"><div class="det-cell-lbl">Rate / hr</div><div class="det-cell-val">KES '+Math.round(f.base_rate_kes||150)+'</div></div>'+
+      '<div class="det-cell"><div class="det-cell-lbl">Available bays</div><div class="det-cell-val green" id="det-avail-bays">'+(free!==null?free+' of '+cap:'–')+'</div></div>'+
+      '<div class="det-cell"><div class="det-cell-lbl">Traffic now</div><div class="det-cell-val" style="font-size:12px;color:'+tl.color+'">'+tl.label+'</div></div>'+
+      '<div class="det-cell"><div class="det-cell-lbl">Hours</div><div class="det-cell-val" style="font-size:11px">'+(f.operating_hours||'24/7')+'</div></div>'+
+    '</div>'+
+    '<div class="ai-predict-box">'+
+      '<div class="ai-predict-lbl"><span class="ai-badge">AI</span> Expected busyness today</div>'+
+      '<div class="predict-bars" id="demand-bars-inner">'+demandBars+'</div>'+
+      '<div class="predict-bar-lbls">'+barLbls+'</div>'+
+      '<div class="predict-hint">Best time to park: '+(basePress>60?'early morning 6–8am or after 8pm':'midday 12–2pm')+'</div>'+
+    '</div>'+
+    '<div class="sentiment-section">'+
+      '<div class="sentiment-lbl"><span class="ai-badge">AI</span> Review intelligence</div>'+
+      sentHTML+
+      '<div id="ai-review-narrative" style="margin-top:8px;padding:8px 10px;background:var(--primary-faint);border-radius:var(--r);border-left:3px solid var(--primary);font-size:10px;color:var(--primary);line-height:1.5;font-style:italic">'+(function(){var k='rev_'+(f.osm_id||Math.round(f.latitude*10000));var cached=geminiCache[k];return(cached&&cached.length>20)?cached:'';})()+'</div>'+
+    '</div>'+
+    '<div class="bay-section-lbl">Choose your bay <span style="font-size:9px;color:var(--text3);font-weight:400">'+(free||0)+' free</span></div>'+
+    '<div class="bay-grid-compact" id="bay-grid">'+bayHTML+'</div>'+
+    '<button class="det-dismiss" onclick="closeDetail()" style="width:100%;margin-top:4px">Dismiss</button>';
+
+  // Generate AI review narrative — show default immediately, upgrade if Gemini responds
+  var secLabel=f.security_score>=4?'high security':f.security_score>=3?'moderate security':'basic security';
+  var rateLabel='KES '+(f.base_rate_kes||150)+'/hr';
+  var defaultReview=getName(f)+' offers '+rateLabel+' parking with '+secLabel+', open '+(f.operating_hours||'24/7')+'.';
+  var reviewEl=document.getElementById('ai-review-narrative');
+  if(reviewEl)reviewEl.textContent=defaultReview;
+  var reviewPrompt='You are a parking facility reviewer for Nairobi. Facility: '+getName(f)+'. Zone: '+(f.zone||'Zone I')+'. Category: '+(f.category||'Parking')+'. Rate: KES '+(f.base_rate_kes||150)+'/hr. Security score: '+(f.security_score||3)+'/5. Overall rating: '+(f.overall_rating||'unrated')+'. Traffic index: '+(f.traffic_delay_index||1)+'. Operating hours: '+(f.operating_hours||'24/7')+'. Payment: '+(f.payment_channels||'M-Pesa, Cash')+'. Write ONE sentence (max 25 words) giving an honest assessment of this parking facility for a Nairobi driver. Be specific and practical. No prefix.';
+  var _rkey='rev_'+(f.osm_id||Math.round(f.latitude*10000));
+  queuedGemini(reviewPrompt,_rkey,function(text){
+    var el=document.getElementById('ai-review-narrative');
+    if(!el)return;
+    if(text&&text.length>20){
+      // Full AI sentence — show it
+      el.textContent=text;
+      el.style.display='';
+    }
+    // If Gemini fails/short — keep the default text already shown, don't hide
+  });
+
+  // Bay pill click handlers
+  document.querySelectorAll('#bay-grid .bay-pill.free').forEach(function(pill){
+    pill.onclick=function(){
+      document.querySelectorAll('#bay-grid .bay-pill').forEach(function(p){p.classList.remove('selected');if(p.classList.contains('free'))p.classList.add('free')});
+      pill.classList.remove('free');pill.classList.add('selected');
+      selectedBay=pill.getAttribute('data-lbl');
+    };
+  });
+  document.getElementById('detail-popup').classList.add('open');
+
+  // CNN occupancy detect — async, 10s timeout, silent fallback
+  if(f.osm_id){
+    var cnnCap=f.estimated_capacity?Math.round(f.estimated_capacity):20;
+    var cnnUrl='/occupancy/detect?lat='+f.latitude+'&lon='+f.longitude+'&facility_id='+f.osm_id+'&capacity='+cnnCap;
+    var cnnTimer=setTimeout(function(){/* silent timeout — pressure values stay */},10000);
+    apiFetch(cnnUrl).then(function(data){
+      clearTimeout(cnnTimer);
+      if(!data||data.source==='pressure_fallback')return;
+      // #18 — update status badge
+      var badge=document.getElementById('det-status-badge');
+      if(badge){
+        var bss=statusStyle(data.status==='full'?'full':data.status==='limited'?'limited':'avail');
+        var satIcon='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:4px;vertical-align:middle"><path d="M3.5 19L9 13.5M14.5 8.5L21 2M2 14l8-8 8 8-8 8-8-8z"/><circle cx="12" cy="12" r="2"/></svg>';
+        badge.style.background=bss.bg;badge.style.color=bss.color;
+        badge.innerHTML=satIcon+(data.status==='full'?'Full · No space available':data.status==='limited'?'Limited · Few spaces left':'Available · Good to go');
+      }
+      // #17 — update available bays cell
+      var baysEl=document.getElementById('det-avail-bays');
+      if(baysEl)baysEl.textContent=data.empty_spaces+' of '+data.capacity;
+      // #19 — update availability sentiment bar
+      var sentRows=document.querySelectorAll('.sent-row');
+      if(sentRows.length>0){
+        var availPct=Math.round((1-data.occupancy_fraction)*100);
+        var availFill=sentRows[0].querySelector('.sent-fill');
+        var availPctEl=sentRows[0].querySelector('.sent-pct');
+        if(availFill)availFill.style.width=availPct+'%';
+        if(availPctEl)availPctEl.textContent=availPct+'%';
+      }
+      // #20 — satellite image analysis label
+      var satBadge=document.getElementById('cnn-sat-badge');
+      if(satBadge){
+        var satIcon2='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:4px;vertical-align:middle"><path d="M3.5 19L9 13.5M14.5 8.5L21 2M2 14l8-8 8 8-8 8-8-8z"/><circle cx="12" cy="12" r="2"/></svg>';
+        satBadge.innerHTML=satIcon2+'Satellite image analysis · '+data.car_count+' car'+(data.car_count!==1?'s':'')+' detected · '+data.empty_spaces+' spaces free · '+data.occupancy_percent+'% full';
+        satBadge.style.display='block';
+      }
+    }).catch(function(){clearTimeout(cnnTimer)});
+  }
+}
+function closeDetail(){document.getElementById('detail-popup').classList.remove('open');selectedBay=null}
+
+/* ══ BOOKING ══ */
+function openBookingPopup(f){
+  if(isGuest){showGuestPrompt();return;}
+  currentFac=f;currentDuration=2;currentTimeTab='Today';renderBookingInner();document.getElementById('booking-popup').classList.add('open');
+}
+function closeBookingPopup(){document.getElementById('booking-popup').classList.remove('open')}
+function renderBookingInner(){
+  var f=currentFac;var rate=Math.round(f.base_rate_kes||150);var cost=rate*currentDuration;
+  var bayInfo=selectedBay?'<div class="selected-bay-info">Selected bay: '+selectedBay+' · confirmed for your vehicle</div>':'';
+  var timeTabs=['Today','Tomorrow','Later'].map(function(t){return '<button class="time-tab'+(t===currentTimeTab?' active':'')+'" onclick="setTimeTab(\''+t+'\')">'+t+'</button>';}).join('');
+  var durPills=[1,2,3,4].map(function(h){return '<button class="dur-pill'+(h===currentDuration?' active':'')+'" onclick="setDuration('+h+')">'+h+' hr</button>';}).join('');
+  document.getElementById('booking-inner').innerHTML=
+    '<div class="bk-handle"></div>'+
+    '<div class="bk-facility-name">'+getName(f)+(selectedBay?' · Bay '+selectedBay:'')+'</div>'+
+    '<div class="bk-facility-sub">'+(f.zone||'Zone I')+' · KES '+rate+'/hr</div>'+
+    bayInfo+
+    '<div class="bk-section-lbl">When</div><div class="time-tabs">'+timeTabs+'</div>'+
+    '<div class="bk-section-lbl">Duration</div><div class="dur-pills">'+durPills+'</div>'+
+    '<div class="cost-preview-box"><div><div class="cost-preview-lbl">Estimated total cost</div><div class="cost-preview-sub">'+currentDuration+' hr × KES '+rate+'</div></div><div class="cost-preview-val">KES '+cost+'</div></div>'+
+    '<div class="reminder-row"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></span><span class="reminder-text">Remind me 15 min before time is up</span><div class="toggle-small on" id="remind-tog"><div class="toggle-dot"></div></div></div>'+
+    '<div class="bk-section-lbl">Confirm booking</div>'+
+    '<div class="slide-confirm-wrap" id="slide-wrap"><div class="slide-confirm-text" id="slide-text">Slide to confirm parking →</div><div class="slide-handle" id="slide-handle">→</div></div>'+
+    '<div class="slide-note">Free cancellation up to 10 minutes before arrival</div>';
+  var tog=document.getElementById('remind-tog');
+  if(tog)tog.onclick=function(){this.classList.toggle('on');this.classList.toggle('off')};
+  slideConfirmed=false;
+  var wrap=document.getElementById('slide-wrap');
+  var handle=document.getElementById('slide-handle');
+  if(wrap&&handle){
+    var isDragging=false,startX=0,handleX=5;
+    var maxX=wrap.offsetWidth-45;
+    function onStart(e){
+      if(slideConfirmed)return;
+      isDragging=true;
+      startX=(e.touches?e.touches[0].clientX:e.clientX)-handleX;
+      e.preventDefault();
+    }
+    function onMove(e){
+      if(!isDragging||slideConfirmed)return;
+      var clientX=e.touches?e.touches[0].clientX:e.clientX;
+      handleX=Math.max(5,Math.min(maxX,clientX-startX));
+      handle.style.left=handleX+'px';
+      handle.style.transition='none';
+      // Fade out text as handle moves right
+      var progress=handleX/maxX;
+      var txt=document.getElementById('slide-text');
+      if(txt)txt.style.opacity=Math.max(0,1-progress*2);
+      // Check if reached end
+      if(handleX>=maxX-5)onConfirm();
+      e.preventDefault();
+    }
+    function onEnd(){
+      if(!isDragging)return;isDragging=false;
+      if(!slideConfirmed){
+        // Snap back
+        handle.style.transition='left .3s ease';
+        handle.style.left='5px';handleX=5;
+        var txt=document.getElementById('slide-text');
+        if(txt){txt.style.transition='opacity .3s';txt.style.opacity='1';}
+      }
+    }
+    function onConfirm(){
+      if(slideConfirmed)return;slideConfirmed=true;isDragging=false;
+      handle.style.transition='left .2s ease';
+      handle.style.left=maxX+'px';
+      handle.classList.add('confirmed');
+      handle.innerHTML='✓';
+      if(navigator.vibrate)navigator.vibrate([50,30,80]);
+      var txt=document.getElementById('slide-text');
+      if(txt){txt.textContent='Confirmed!';txt.style.opacity='1';txt.style.paddingLeft='0';}
+      setTimeout(function(){slideConfirmed=false;closeBookingPopup();confirmBooking(currentFac)},700);
+    }
+    handle.addEventListener('mousedown',onStart);
+    handle.addEventListener('touchstart',onStart,{passive:false});
+    document.addEventListener('mousemove',onMove);
+    document.addEventListener('touchmove',onMove,{passive:false});
+    document.addEventListener('mouseup',onEnd);
+    document.addEventListener('touchend',onEnd);
+    // Allow tap anywhere inside wrap (handle, text, or background) for accessibility
+    wrap.addEventListener('click',function(e){if(!isDragging&&!slideConfirmed)onConfirm()});
+  }
+}
+function setTimeTab(t){currentTimeTab=t;renderBookingInner()}
+function setDuration(h){currentDuration=h;renderBookingInner()}
+function confirmBooking(f){
+  var session={id:'PW-'+Date.now(),name:getName(f),bay:selectedBay||'P1',rate:f.base_rate_kes||150,duration:currentDuration,start:Date.now(),lat:f.latitude,lon:f.longitude,ref:'PW-'+Math.floor(Math.random()*90000+10000)};
+  localStorage.setItem('pw_active_session',JSON.stringify(session));
+  startNavigation(f);renderBookings();
+  showToast('Booked '+getName(f)+' · Bay '+(selectedBay||'P1'));
+}
+
+/* ══ NAVIGATION (Google Directions) ══ */
+function goToMapAndRoute(){
+  switchTab('map',document.getElementById('nav-map'));
+  setTimeout(function(){
+    if(currentFac)showRoutePreview(currentFac);
+    if(gMap&&currentFac)gMap.panTo({lat:currentFac.latitude,lng:currentFac.longitude});
+  },200);
+}
+function goToMapAndNavigate(){
+  switchTab('map',document.getElementById('nav-map'));
+  setTimeout(function(){
+    if(currentFac)startNavigation(currentFac);
+  },200);
+}
+function startNavigation(f){
+  if(!gMap||typeof google==='undefined')return;
+  currentFac=f;navActive=true;
+  // Pre-warm speech on this user gesture
+  if(window.speechSynthesis){window.speechSynthesis.cancel()}
+  switchTab('map',document.getElementById('nav-map'));
+  document.getElementById('nav-overlay').classList.add('active');
+  ['bottom-sheet','smart-btn','bottom-nav','map-topbar','map-zoom'].forEach(function(id){document.getElementById(id).style.display='none'});
+  document.getElementById('app-navbar').style.display='none';
+  document.getElementById('eta-rate').textContent='KES '+Math.round(f.base_rate_kes||150);
+  var dist=haversine(userLat,userLon,f.latitude,f.longitude);
+  var eta=Math.max(1,Math.round(dist/0.25));
+  document.getElementById('eta-time').textContent=eta+' min';
+  document.getElementById('eta-dist').textContent=dist<1?Math.round(dist*1000)+'m':dist.toFixed(1)+' km';
+  document.getElementById('nav-dist').textContent=dist<1?Math.round(dist*1000)+'m':dist.toFixed(1)+' km';
+  // Clear preview route
+  if(previewPoly){previewPoly.setMap(null);previewPoly=null}
+  if(navDirectionsRenderer){navDirectionsRenderer.setMap(null);navDirectionsRenderer=null}
+  clearPreviewRoute();
+  // Shrink non-destination markers during navigation (keep visible, just smaller/dimmer)
+  markers.forEach(function(m){
+    var isDest=m.fac.latitude===f.latitude&&m.fac.longitude===f.longitude;
+    if(isDest){
+      m.marker.setZIndex(50);
+    } else {
+      // Use a tiny dot icon for background markers
+      m.marker.setIcon({
+        path:google.maps.SymbolPath.CIRCLE,
+        scale:4,
+        fillColor:'#1B4332',fillOpacity:0.35,
+        strokeColor:'#1B4332',strokeWeight:1
+      });
+      m.marker.setZIndex(1);
+    }
+  });
+  navDirectionsRenderer=new google.maps.DirectionsRenderer({
+    map:gMap,suppressMarkers:false,suppressPolylines:true
+  });
+  // 4-second fallback
+  var fallbackFired=false;
+  var fallbackTimer=setTimeout(function(){
+    if(!fallbackFired){
+      fallbackFired=true;
+      var bearing=Math.atan2(f.longitude-userLon,f.latitude-userLat)*180/Math.PI;
+      var dir=bearing>-45&&bearing<=45?'north':bearing>45&&bearing<=135?'east':bearing>135||bearing<=-135?'south':'west';
+      document.getElementById('nav-inst').textContent='Head '+dir+' toward '+getName(f);
+      document.getElementById('nav-inst-sub').textContent='Route loading…';
+      speak('Head '+dir+' toward your destination');
+    }
+  },4000);
+  var ds=new google.maps.DirectionsService();
+  ds.route({
+    origin:{lat:userLat,lng:userLon},
+    destination:{lat:f.latitude,lng:f.longitude},
+    travelMode:google.maps.TravelMode.DRIVING,
+    provideRouteAlternatives:false,
+  },function(result,status){
+    clearTimeout(fallbackTimer);fallbackFired=true;
+    if(status==='OK'){
+      navDirectionsRenderer.setDirections(result);
+      // Draw teal nav route — two layers for visibility
+      if(navPolyline)navPolyline.setMap(null);
+      navPolyline=new google.maps.Polyline({
+        path:result.routes[0].overview_path,map:gMap,
+        strokeColor:'#0D9488',strokeWeight:7,strokeOpacity:0.95,zIndex:12
+      });
+      // Wide shadow for visibility against map tiles
+      var navShadow=new google.maps.Polyline({
+        path:result.routes[0].overview_path,map:gMap,
+        strokeColor:'#0D9488',strokeWeight:18,strokeOpacity:0.18,zIndex:11
+      });
+      previewLines.push(navShadow);
+      var leg=result.routes[0].legs[0];
+      document.getElementById('eta-time').textContent=leg.duration.text;
+      document.getElementById('eta-dist').textContent=leg.distance.text;
+      document.getElementById('nav-dist').textContent=leg.distance.text;
+      gMap.fitBounds(result.routes[0].bounds,{top:80,bottom:120,left:20,right:20});
+      if(leg.steps&&leg.steps.length){
+        var step=leg.steps[0];
+        var inst=step.instructions.replace(/<[^>]+>/g,'');
+        document.getElementById('nav-inst').textContent=inst.length>60?inst.slice(0,57)+'…':inst;
+        document.getElementById('nav-inst-sub').textContent=step.distance?'In '+step.distance.text:'';
+        document.getElementById('nav-dist').textContent=step.distance?step.distance.text:'–';
+        document.getElementById('nav-arrow').textContent=maneuverArrow(step.maneuver);
+        speak(inst);
+        // Step through remaining instructions
+        var stepIdx=1;
+        clearInterval(navInterval);
+        navInterval=setInterval(function(){
+          if(stepIdx>=leg.steps.length-1){clearInterval(navInterval);return}
+          var s=leg.steps[stepIdx++];
+          var txt=s.instructions.replace(/<[^>]+>/g,'');
+          document.getElementById('nav-inst').textContent=txt.length>60?txt.slice(0,57)+'…':txt;
+          document.getElementById('nav-inst-sub').textContent=s.distance?'In '+s.distance.text:'';
+          document.getElementById('nav-arrow').textContent=maneuverArrow(s.maneuver);
+          speak(txt);
+        },12000);
+      }
+    }else{
+      document.getElementById('nav-inst').textContent='Head toward '+getName(f);
+      speak('Navigate to '+getName(f));
+    }
+  });
+}
+function maneuverArrow(m){
+  if(!m)return '↑';
+  if(m.includes('turn-right'))return '→';
+  if(m.includes('turn-left'))return '←';
+  if(m.includes('turn-sharp-right'))return '↱';
+  if(m.includes('turn-sharp-left'))return '↰';
+  if(m.includes('uturn'))return '↩';
+  if(m.includes('roundabout'))return '↻';
+  if(m.includes('merge'))return '↑';
+  if(m.includes('ramp-right'))return '↗';
+  if(m.includes('ramp-left'))return '↖';
+  return '↑';
+}
+function exitNav(){
+  navActive=false;clearInterval(navInterval);window.speechSynthesis&&window.speechSynthesis.cancel();
+  if(navDirectionsRenderer){navDirectionsRenderer.setMap(null);navDirectionsRenderer=null}
+  clearPreviewRoute();
+  // Restore all parking markers to full icons
+  markers.forEach(function(m){m.marker.setMap(null)});
+  markers=[];
+  addAllMarkers();
+  document.getElementById('nav-overlay').classList.remove('active');
+  ['bottom-sheet','smart-btn','bottom-nav','map-topbar','map-zoom'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display=''});
+  var nb=document.getElementById('app-navbar');if(nb)nb.style.display='';
+  if(gMap)gMap.setCenter({lat:userLat,lng:userLon});
+  if(gMap)google.maps.event.trigger(gMap,'resize');
+}
+function recenterMap(){if(gMap&&currentFac)gMap.panTo({lat:currentFac.latitude,lng:currentFac.longitude})}
+function rerouteNav(){if(currentFac){exitNav();setTimeout(function(){startNavigation(currentFac)},300)}}
+function toggleMute(){
+  voiceMuted=!voiceMuted;
+  var icon=document.getElementById('mute-icon');var lbl=document.getElementById('mute-lbl');
+  if(voiceMuted){
+    icon.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
+    lbl.textContent='Unmute';window.speechSynthesis&&window.speechSynthesis.cancel();
+  }else{
+    icon.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>';
+    lbl.textContent='Mute';
+  }
+}
+
+/* ══ VOICE ══ */
+function speak(text){
+  if(voiceMuted||!window.speechSynthesis||!PREFS.voice)return;
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);u.rate=.92;u.pitch=1.08;
+  var trySpeak=function(){
+    var voices=window.speechSynthesis.getVoices();
+    var female=voices.find(function(v){return /samantha|zira|karen|moira|tessa|google uk english female|victoria/i.test(v.name)})||voices.find(function(v){return v.lang.startsWith('en')})||null;
+    if(female){u.voice=female;u.lang=female.lang}
+    window.speechSynthesis.speak(u);
+  };
+  if(window.speechSynthesis.getVoices().length)trySpeak();
+  else{window.speechSynthesis.onvoiceschanged=trySpeak}
+}
+
+/* ══ SMART PARK ══ */
+function runSmartPark(){
+  showToast('Finding your best spot…');
+  var h=new Date().getHours();
+  var dow=new Date().getDay();
+  apiFetch('/recommend?user_lat='+userLat+'&user_lon='+userLon+'&time='+h+'&day_of_week='+dow+'&top_n=1').then(function(data){
+    if(data&&data.recommendations&&data.recommendations.length){
+      var rec=data.recommendations[0];
+      var best=parkingData.find(function(f){return f.osm_id===rec.facility_id});
+      if(!best)best=parkingData.find(function(f){return Math.abs(f.latitude-rec.latitude)<0.001&&Math.abs(f.longitude-rec.longitude)<0.001});
+      if(!best)best={latitude:rec.latitude,longitude:rec.longitude,facility_name_clean:rec.name,osm_id:rec.facility_id,base_rate_kes:rec.base_rate_kes,parking_pressure_score:rec.predicted_pressure,traffic_delay_index:1,zone:rec.zone,category:'Parking',operating_hours:'24/7'};
+      showToast('Best: '+rec.name+' · KES '+Math.round(rec.base_rate_kes)+' · '+rec.reason);
+      if(gMap){
+        gMap.panTo({lat:rec.latitude,lng:rec.longitude});
+        var bm=new google.maps.Marker({position:{lat:rec.latitude,lng:rec.longitude},map:gMap,animation:google.maps.Animation.BOUNCE,zIndex:20});
+        setTimeout(function(){bm.setAnimation(null)},2000);
+      }
+      showRoutePreview(best);openDetail(best);selectedFac=best;
+      syncSheetToFacility(best);
+    }else{smartParkLocal();}
+  }).catch(function(){smartParkLocal();});
+}
+function smartParkLocal(){
+  var avail=parkingData.filter(function(f){return pressureClass(f)!=='full'});
+  if(!avail.length){showToast('No available spots found.');return}
+  var maxD=Math.max.apply(null,avail.map(function(f){return haversine(userLat,userLon,f.latitude,f.longitude)}));
+  var prices=avail.map(function(f){return f.base_rate_kes||150});
+  var maxP=Math.max.apply(null,prices),minP=Math.min.apply(null,prices);
+  var scored=avail.map(function(f){
+    var dist=haversine(userLat,userLon,f.latitude,f.longitude);
+    var nd=dist/maxD,npress=(f.parking_pressure_score||50)/100,np=(maxP-minP)>0?((f.base_rate_kes||150)-minP)/(maxP-minP):0;
+    return Object.assign({},f,{_dist:dist,_score:(1-nd)*.6+(1-npress)*.3+(1-np)*.1});
+  });
+  var best=scored.sort(function(a,b){return b._score-a._score})[0];
+  var ds=best._dist<1?Math.round(best._dist*1000)+'m':best._dist.toFixed(1)+'km';
+  showToast('Best: '+getName(best)+' · KES '+Math.round(best.base_rate_kes)+' · '+ds);
+  if(gMap){
+    gMap.panTo({lat:best.latitude,lng:best.longitude});
+    var bm=new google.maps.Marker({position:{lat:best.latitude,lng:best.longitude},map:gMap,animation:google.maps.Animation.BOUNCE,zIndex:20});
+    setTimeout(function(){bm.setAnimation(null)},2000);
+  }
+  showRoutePreview(best);openDetail(best);selectedFac=best;
+  syncSheetToFacility(best);
+}
+
+/* ══ OSM EXPANSION ══ */
+function queryOSM(lat,lon){
+  if(!gMap||typeof google==='undefined')return;
+  var url='https://overpass-api.de/api/interpreter?data=[out:json];node["amenity"="parking"](around:3000,'+lat+','+lon+');out body;';
+  fetch(url,{signal:AbortSignal.timeout(10000)}).then(function(r){return r.json()}).then(function(data){
+    if(!data||!data.elements||!data.elements.length)return;
+    osmMarkers.forEach(function(m){m.setMap(null)});osmMarkers=[];osmFacilities=[];
+    data.elements.slice(0,30).forEach(function(el){
+      if(!el.lat||!el.lon)return;
+      var tags=el.tags||{};
+      var name=tags.name||tags['name:en']||'Parking';
+      var fee=tags.fee;
+      var charge=tags.charge||tags['charge:conditional']||null;
+      var priceLabel=charge?charge:(fee==='yes'?'Paid':(fee==='no'?'Free':'Price unknown'));
+      var svgStr='<svg xmlns="http://www.w3.org/2000/svg" width="62" height="28"><rect x="1" y="1" width="60" height="22" rx="11" fill="#6B7280" stroke="#4B5563" stroke-width="1.5"/><text x="31" y="12" text-anchor="middle" dominant-baseline="central" font-size="8" font-weight="700" fill="white" font-family="Inter,Arial,sans-serif">P · '+priceLabel+'</text><polygon points="27,22 35,22 31,28" fill="#6B7280"/></svg>';
+      var mk=new google.maps.Marker({
+        position:{lat:el.lat,lng:el.lon},map:gMap,
+        icon:{url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svgStr),scaledSize:new google.maps.Size(62,28),anchor:new google.maps.Point(31,28)},
+        title:name,zIndex:1
+      });
+      var osmFac={facility_name_clean:name,display_name:name,latitude:el.lat,longitude:el.lon,
+        base_rate_kes:null,parking_pressure_score:50,traffic_delay_index:1,
+        zone:'OSM',category:'Parking',operating_hours:tags.opening_hours||'Unknown',
+        security_score:null,overall_rating:null,estimated_capacity:tags.capacity||null,
+        fee:fee,charge:charge,priceLabel:priceLabel,
+        _isOSM:true,osm_id:el.id};
+      mk.addListener('click',function(){openOSMDetail(osmFac)});
+      osmMarkers.push(mk);
+      osmFacilities.push(osmFac);
+    });
+    showToast('Showing '+Math.min(data.elements.length,30)+' OSM parking spots nearby');
+    if(userLat&&userLon)refreshNearby(userLat,userLon);
+  }).catch(function(){});
+}
+function openOSMDetail(f){
+  currentFac=f;
+  var os=true;var openSt={open:true,label:'Hours unknown',color:'var(--text3)',bg:'var(--bg)'};
+  var photoSVG='<svg width="80" height="72" viewBox="0 0 80 72" fill="none"><rect width="80" height="72" rx="12" fill="#6B7280"/><text x="40" y="40" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" font-family="Inter,sans-serif">OSM Parking</text></svg>';
+  document.getElementById('detail-inner').innerHTML=
+    '<div class="det-handle"></div>'+
+    '<div class="det-photo" style="background:#6B7280;display:flex;align-items:center;justify-content:center">'+photoSVG+'</div>'+
+    '<div class="det-header"><div class="det-name">'+f.facility_name_clean+'</div>'+
+    '<button class="det-close" onclick="closeDetail()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'+
+    '<div class="det-addr"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> OpenStreetMap data · No ML predictions</div>'+
+    '<div style="display:inline-flex;align-items:center;gap:5px;background:#F3F4F6;color:#6B7280;border-radius:var(--r-pill);padding:5px 14px;font-size:11px;font-weight:700;margin:6px 0 10px">OSM data · Community mapped</div>'+
+    '<div class="det-actions" style="margin-bottom:12px">'+
+      '<div style="display:flex;gap:8px">'+
+        '<button class="det-action-btn" style="flex:1;background:var(--primary-dim);color:var(--primary);border:1.5px solid rgba(27,67,50,.15);font-weight:700;font-size:12px" onclick="closeDetail();goToMapAndRoute()">'+
+          '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:4px"><path d="M3 12h18M3 6h18M3 18h18"/></svg>Show route</button>'+
+        '<button class="det-action-btn" style="flex:1;background:var(--accent);color:#111;font-weight:700;font-size:12px" onclick="closeDetail();goToMapAndNavigate()">'+
+          '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:4px"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>Navigate</button>'+
+      '</div>'+
+    '</div>'+
+    '<div style="padding:14px;background:var(--bg);border-radius:var(--r-lg);margin-bottom:12px;font-size:12px;color:var(--text2);line-height:1.6">'+
+      '<div style="font-weight:700;color:var(--text);margin-bottom:4px">Community mapped parking</div>'+
+      'This facility is sourced from OpenStreetMap. No ML demand prediction or CNN occupancy data available. These features require the trained Nairobi dataset.'+
+    '</div>'+
+    '<button class="det-dismiss" onclick="closeDetail()" style="width:100%;margin-top:4px">Dismiss</button>';
+  document.getElementById('detail-popup').classList.add('open');
+}
+
+/* ══ LOCATE ══ */
+function locateUser(){
+  if(!navigator.geolocation)return showToast('Geolocation not available');
+  navigator.geolocation.getCurrentPosition(function(pos){
+    userLat=pos.coords.latitude;userLon=pos.coords.longitude;
+    if(gMap)gMap.panTo({lat:userLat,lng:userLon});
+    refreshNearby(userLat,userLon);
+    if(!inNairobi(userLat,userLon))queryOSM(userLat,userLon);
+  },function(){showToast('Could not get your location')});
+}
+
+/* ══ SEARCH ══ */
+function openSearch(){document.getElementById('search-modal').classList.add('open');setTimeout(function(){document.getElementById('sm-field').focus()},100);doSearch('')}
+function closeSearch(){document.getElementById('search-modal').classList.remove('open')}
+function doSearch(q){
+  var lq=q.toLowerCase().trim();
+  var res=lq===''?parkingData.slice(0,25):parkingData.filter(function(f){
+    return getName(f).toLowerCase().includes(lq)||(f.zone||'').toLowerCase().includes(lq)||(f.category||'').toLowerCase().includes(lq)||(f.display_name||'').toLowerCase().includes(lq);
+  }).slice(0,25);
+  var c=document.getElementById('sm-results');c.innerHTML='';
+  res.forEach(function(f){
+    var cls=pressureClass(f);var ss=statusStyle(cls);
+    var item=document.createElement('div');item.className='sm-item';
+    item.innerHTML='<div class="sm-icon" style="background:'+(f.category&&f.category.includes('On-Street')?'var(--teal-dim)':'var(--primary-dim)')+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round">'+(f.category&&f.category.includes('On-Street')?'<path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/>':'<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>')+'</svg></div><div style="flex:1;min-width:0"><div class="sm-name">'+getName(f)+'</div><div class="sm-meta">'+(f.zone||'Zone I')+' · <span style="color:'+ss.color+';font-weight:600">'+pressureLabel(f)+'</span></div></div><div class="sm-price">KES '+Math.round(f.base_rate_kes||150)+'</div>';
+    item.onclick=function(){closeSearch();switchTab('map',document.getElementById('nav-map'));setTimeout(function(){if(gMap)gMap.panTo({lat:f.latitude,lng:f.longitude});showRoutePreview(f);openDetail(f)},200)};
+    c.appendChild(item);
+  });
+  if(!res.length)c.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">No spots found.</div>';
+}
+
+/* ══ NL SEARCH ══ */
+function openNLModal(){
+  document.getElementById('nl-modal').classList.add('open');
+  document.getElementById('nl-input').value='';
+  document.getElementById('nl-results').innerHTML='';
+  document.getElementById('nl-suggestions').style.display='';
+  setTimeout(function(){document.getElementById('nl-input').focus()},100);
+}
+function closeNLModal(){document.getElementById('nl-modal').classList.remove('open')}
+function fillNL(el){
+  var txt=el.textContent.replace(/^"+|"+$/g,'').trim();
+  document.getElementById('nl-input').value=txt;
+  document.getElementById('nl-suggestions').style.display='none';
+}
+function runNLSearch(){
+  var q=document.getElementById('nl-input').value.trim();
+  if(!q){showToast('Enter what you need first');return}
+  document.getElementById('nl-suggestions').style.display='none';
+  var nlRes=document.getElementById('nl-results');
+  nlRes.innerHTML='<div style="text-align:center;padding:20px;color:var(--primary);font-size:12px;display:flex;align-items:center;justify-content:center;gap:8px"><span class="ai-badge">AI</span>Searching with Gemini…</div>';
+  var geminiNLPrompt='Nairobi parking search. Query: "'+q+'". Return ONLY JSON. Set a field ONLY if the user EXPLICITLY mentioned it, otherwise null. Do not infer or assume.\n{"cat":"on-street" or "off-street" or null,"price":max KES if user said cheap/price/under X else null,"sec":min security 1-5 only if user said safe/secure/attended else null,"zone":"I" or "II" or null,"open24":true only if user said 24/7/overnight else null,"avail":true only if user said available/free space else null,"lat":landmark lat or null,"lon":landmark lon or null,"why":"brief summary"}\nNairobi landmarks: KNH(-1.3017,36.8073),Westlands(-1.2635,36.8028),Upperhill(-1.2966,36.8119),Kilimani(-1.2887,36.7858),Junction Mall(-1.3001,36.7821),CBD(-1.286,36.817),Kenyatta Ave(-1.284,36.822),Archives(-1.286,36.822),Moi Ave(-1.284,36.820),Railways(-1.291,36.824),City Hall(-1.287,36.820),KICC(-1.288,36.822),GPO(-1.285,36.820),Uhuru Park(-1.289,36.817),Anniversary Towers(-1.290,36.820),Times Tower(-1.291,36.823),University(-1.279,36.815),Parklands(-1.261,36.816),Karen(-1.320,36.706),Gigiri(-1.236,36.802),Ruaraka(-1.237,36.878).';
+  queuedGemini(geminiNLPrompt,null,function(text){
+    var filters={};
+    try{
+      // Extract JSON object - find first { and last }
+      var jsonStart=text?text.indexOf('{'):-1;
+      var jsonEnd=text?text.lastIndexOf('}'):-1;
+      var clean=jsonStart>=0&&jsonEnd>jsonStart?text.slice(jsonStart,jsonEnd+1):'{}';
+      var raw=JSON.parse(clean);
+      console.log('Gemini raw filters:', JSON.stringify(raw));
+      // Map short field names to full names
+      filters={
+        category:raw.cat==='on-street'?'On-Street':raw.cat==='off-street'?'Off-Street':null,
+        max_price_kes:raw.price||null,
+        min_security:raw.sec||null,
+        zone:raw.zone==='I'?'Zone I':raw.zone==='II'?'Zone II':null,
+        hours_24_7:raw.open24||null,
+        available_only:raw.avail||null,
+        landmark_lat:raw.lat||null,
+        landmark_lon:raw.lon||null,
+        search_summary:raw.why||null
+      };
+      console.log('Gemini filters:', JSON.stringify(filters));
+    }catch(e){
+      console.log('Gemini JSON parse error:', e.message, 'raw:', text&&text.slice(0,100));
+      filters={};
+    }
+    nlApplyFilters(q,filters);
+  });
+}
+function queuedGemini(prompt,cacheKey,callback){
+  if(cacheKey&&geminiCache[cacheKey]){callback(geminiCache[cacheKey]);return;}
+  _geminiQueue.push({prompt:prompt,cacheKey:cacheKey,callback:callback});
+  _processGeminiQueue();
+}
+function _processGeminiQueue(){
+  if(_geminiBusy||!_geminiQueue.length)return;
+  var wait=Math.max(0,GEMINI_RATE_MS-(Date.now()-_geminiLastCall));
+  setTimeout(function(){
+    if(!_geminiQueue.length){_geminiBusy=false;return;}
+    _geminiBusy=true;
+    var item=_geminiQueue.shift();
+    gemini(item.prompt).then(function(result){
+      _geminiBusy=false;_geminiLastCall=Date.now();
+      if(result&&item.cacheKey)geminiCache[item.cacheKey]=result;
+      item.callback(result);
+      if(_geminiQueue.length)_processGeminiQueue();
+    });
+  },wait);
+}
+
+function nlApplyFilters(q,filters){
+  var results=parkingData.slice();
+  if(filters.category)results=results.filter(function(f){return f.category&&f.category.includes(filters.category)});
+  if(filters.max_price_kes)results=results.filter(function(f){return(f.base_rate_kes||999)<=filters.max_price_kes});
+  if(filters.min_security)results=results.filter(function(f){return(f.security_score||0)>=filters.min_security});
+  if(filters.zone)results=results.filter(function(f){return f.zone===filters.zone});
+  if(filters.hours_24_7)results=results.filter(function(f){return(f.operating_hours||'').includes('24/7')||!f.operating_hours});
+  if(filters.available_only)results=results.filter(function(f){return pressureClass(f)==='avail'});
+  if(filters.landmark_lat&&filters.landmark_lon){
+    var ll=filters.landmark_lat,ln=filters.landmark_lon;
+    // Filter to 3km radius around landmark then sort by distance
+    var withinRadius=results.filter(function(f){return haversine(f.latitude,f.longitude,ll,ln)<=3.0});
+    if(withinRadius.length>=3)results=withinRadius; // use radius filter if enough results
+    results=results.sort(function(a,b){return haversine(a.latitude,a.longitude,ll,ln)-haversine(b.latitude,b.longitude,ll,ln)});
+  }else{
+    // Keyword fallback sort
+    var ql=q.toLowerCase();
+    if(/hospital|knh|kenyatta national/.test(ql))results=results.sort(function(a,b){return haversine(a.latitude,a.longitude,-1.3017,36.8073)-haversine(b.latitude,b.longitude,-1.3017,36.8073)});
+    else if(/westlands|westgate/.test(ql))results=results.sort(function(a,b){return haversine(a.latitude,a.longitude,-1.2635,36.8028)-haversine(b.latitude,b.longitude,-1.2635,36.8028)});
+    else if(/upperhill/.test(ql))results=results.sort(function(a,b){return haversine(a.latitude,a.longitude,-1.2966,36.8119)-haversine(b.latitude,b.longitude,-1.2966,36.8119)});
+    else results=results.sort(function(a,b){return haversine(userLat,userLon,a.latitude,a.longitude)-haversine(userLat,userLon,b.latitude,b.longitude)});
+  }
+  var nameMatch=parkingData.filter(function(f){return getName(f).toLowerCase().includes(q.toLowerCase())});
+  nameMatch.forEach(function(f){if(!results.find(function(r){return r.latitude===f.latitude}))results.unshift(f)});
+  var top=results.slice(0,10);
+  var summary=filters.search_summary||top.length+' results for: '+q;
+  var c=document.getElementById('nl-results');
+  c.innerHTML='<div style="background:var(--primary-dim);border-radius:var(--r);padding:8px 12px;margin-bottom:10px;font-size:10px;color:var(--primary);font-weight:500;display:flex;gap:6px"><span class="ai-badge" style="flex-shrink:0">AI</span>'+summary+'</div>';
+  if(!top.length){c.innerHTML+='<div style="text-align:center;padding:16px;color:var(--text3);font-size:12px">No matches. Try a different description.</div>';return}
+  top.forEach(function(f){
+    var cls=pressureClass(f);var ss=statusStyle(cls);
+    var dist=haversine(userLat,userLon,f.latitude,f.longitude);
+    var ds=dist<1?Math.round(dist*1000)+'m':dist.toFixed(1)+'km';
+    var item=document.createElement('div');item.className='sm-item';
+    item.innerHTML='<div class="sm-icon" style="background:var(--primary-dim)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div style="flex:1;min-width:0"><div class="sm-name">'+getName(f)+'</div><div class="sm-meta">'+ds+' · <span style="color:'+ss.color+';font-weight:600">'+pressureLabel(f)+'</span> · KES '+Math.round(f.base_rate_kes||150)+'/hr</div></div>';
+    item.onclick=function(){closeNLModal();switchTab('map',document.getElementById('nav-map'));setTimeout(function(){if(gMap)gMap.panTo({lat:f.latitude,lng:f.longitude});showRoutePreview(f);openDetail(f)},200)};
+    c.appendChild(item);
+  });
+}
+function _oldNLKeywords(){
+  // Legacy keyword extraction kept as reference
+  var results=parkingData.slice();
+  // Expanded keyword extraction
+  if(/on.?street|road|roadside|street parking/.test(q))results=results.filter(function(f){return f.category&&f.category.includes('On-Street')});
+  else if(/off.?street|covered|indoor|multi.?storey|parking lot|building/.test(q))results=results.filter(function(f){return f.category&&f.category.includes('Off-Street')});
+  if(/available|free|open|empty|space/.test(q))results=results.filter(function(f){return(f.traffic_delay_index||1)<1.8});
+  if(/limited|few|some/.test(q))results=results.filter(function(f){var i=f.traffic_delay_index||1;return i>=1.8&&i<2.5});
+  if(/cheap|budget|affordable|low cost|inexpensive|150/.test(q))results=results.filter(function(f){return(f.base_rate_kes||999)<=150});
+  if(/200/.test(q))results=results.filter(function(f){return(f.base_rate_kes||999)<=200});
+  if(/300/.test(q))results=results.filter(function(f){return(f.base_rate_kes||999)<=300});
+  if(/zone\s*i\b|zone 1|cbd|central/.test(q))results=results.filter(function(f){return f.zone==='Zone I'});
+  if(/zone\s*ii|zone 2/.test(q))results=results.filter(function(f){return f.zone==='Zone II'});
+  if(/safe|secure|attended|cctv|guard|watchman/.test(q))results=results.filter(function(f){return(f.security_score||0)>=3.5});
+  if(/24.?hour|overnight|all.?night|24\/7/.test(q))results=results.filter(function(f){return(f.operating_hours||'').includes('24/7')||!f.operating_hours});
+  if(/hospital|knh|kenyatta/.test(q))results=results.sort(function(a,b){return haversine(a.latitude,a.longitude,-1.3017,36.8073)-haversine(b.latitude,b.longitude,-1.3017,36.8073)});
+  else if(/westlands|westgate/.test(q))results=results.sort(function(a,b){return haversine(a.latitude,a.longitude,-1.2635,36.8028)-haversine(b.latitude,b.longitude,-1.2635,36.8028)});
+  else if(/upperhill|upper hill|nhc/.test(q))results=results.sort(function(a,b){return haversine(a.latitude,a.longitude,-1.2966,36.8119)-haversine(b.latitude,b.longitude,-1.2966,36.8119)});
+  else if(/kilimani/.test(q))results=results.sort(function(a,b){return haversine(a.latitude,a.longitude,-1.2887,36.7858)-haversine(b.latitude,b.longitude,-1.2887,36.7858)});
+  else results=results.sort(function(a,b){return haversine(userLat,userLon,a.latitude,a.longitude)-haversine(userLat,userLon,b.latitude,b.longitude)});
+  // Also try name match for any other query
+  var nameMatch=parkingData.filter(function(f){return getName(f).toLowerCase().includes(q)});
+  nameMatch.forEach(function(f){if(!results.find(function(r){return r.latitude===f.latitude&&r.longitude===f.longitude}))results.unshift(f)});
+  var top=results.slice(0,10);
+  document.getElementById('nl-suggestions').style.display='none';
+  var c=document.getElementById('nl-results');
+  c.innerHTML='<div style="font-size:10px;font-weight:700;color:var(--primary);margin-bottom:10px;display:flex;align-items:center;gap:5px"><span class="ai-badge">AI</span>'+top.length+' matches found</div>';
+  top.forEach(function(f){
+    var cls=pressureClass(f);var ss=statusStyle(cls);
+    var dist=haversine(userLat,userLon,f.latitude,f.longitude);
+    var ds=dist<1?Math.round(dist*1000)+'m':dist.toFixed(1)+'km';
+    var item=document.createElement('div');item.className='sm-item';
+    item.innerHTML='<div class="sm-icon" style="background:var(--primary-dim)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div style="flex:1;min-width:0"><div class="sm-name">'+getName(f)+'</div><div class="sm-meta">'+ds+' · <span style="color:'+ss.color+';font-weight:600">'+pressureLabel(f)+'</span> · KES '+Math.round(f.base_rate_kes||150)+'/hr</div></div>';
+    item.onclick=function(){closeNLModal();switchTab('map',document.getElementById('nav-map'));setTimeout(function(){if(gMap)gMap.panTo({lat:f.latitude,lng:f.longitude});showRoutePreview(f);openDetail(f)},200)};
+    c.appendChild(item);
+  });
+  if(!top.length)c.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">No matches. Try "cheap Zone I" or "safe parking CBD".</div>';
+}
+
+/* ══ OVERVIEW ══ */
+function renderOverview(){
+  // Show default insight text immediately so UI never blocks
+  var h=new Date().getHours();
+  var bestTimeDefault=h<10?'12pm to 2pm':h<14?'right now, quieter than usual':'early morning tomorrow';
+  var insightEl=document.getElementById('ai-insight-text');
+  if(insightEl&&insightEl.textContent==='Analysing busyness patterns…'){
+    insightEl.textContent='Best time to park today: '+bestTimeDefault+'. Based on historical busyness patterns.';
+  }
+  // Try API snapshot first, fall back to local data
+  if(typeof apiFetch!=='undefined'){
+    apiFetch('/availability/snapshot').then(function(snap){
+      if(snap&&snap.available!==undefined){
+        _snapshotCache=snap;
+        renderOverviewWithData(snap);
+      }else{
+        renderOverviewWithData(null);
+      }
+    });
+  }else{
+    renderOverviewWithData(null);
+  }
+}
+function renderOverviewWithData(snap){
+  var d=parkingData;
+  var avail=snap?snap.available:d.filter(function(f){return pressureClass(f)==='avail'}).length;
+  var limited=snap?snap.limited:d.filter(function(f){return pressureClass(f)==='limited'}).length;
+  var full=snap?snap.full:d.filter(function(f){return pressureClass(f)==='full'}).length;
+  var avg=Math.round(d.reduce(function(s,f){return s+(f.base_rate_kes||0)},0)/d.length);
+  document.getElementById('quick-strip').innerHTML=
+    '<div class="qs-pill g">'+avail+' available</div>'+
+    '<div class="qs-pill a">'+limited+' limited</div>'+
+    '<div class="qs-pill r">'+full+' full</div>'+
+    '<div class="qs-pill n">Avg KES '+avg+'/hr</div>';
+  document.getElementById('hero-val').textContent=d.length;
+  document.getElementById('ov-sub').textContent=(typeof userLat!=='undefined'&&userLat&&!inNairobi(userLat,userLon))?'Live data · OSM parking near you':'Live data · '+d.length+' spots tracked';
+  var on=d.filter(function(f){return f.category&&f.category.includes('On-Street')}).length;
+  var cbd=d.filter(function(f){return f.tier==='tier1_cbd'}).length;
+  document.getElementById('stats-sub').innerHTML=
+    '<div class="stat-c"><div class="stat-v">'+on+'</div><div class="stat-l">On-street spots</div></div>'+
+    '<div class="stat-c"><div class="stat-v">91%</div><div class="stat-l">Peak occupancy rate</div></div>'+
+    '<div class="stat-c"><div class="stat-v">'+cbd+'</div><div class="stat-l">Premium zones</div></div>';
+  var h=new Date().getHours();
+  var bestTime=h<10?'12pm to 2pm':h<14?'right now, quieter than usual':'early morning tomorrow';
+  // If API returned hourly chart, use it
+  if(snap&&snap.hourly_chart&&snap.hourly_chart.length){
+    var apiHours=snap.hourly_chart.map(function(x){return x.hour});
+    var apiDemand=snap.hourly_chart.map(function(x){return x.pressure});
+    var maxP=Math.max.apply(null,apiDemand);
+    var bars=document.getElementById('chart-bars');
+    var lbls=document.getElementById('bar-lbls');
+    if(bars&&lbls){
+      bars.innerHTML='';lbls.innerHTML='';
+      apiHours.forEach(function(hr,i){
+        var pct=Math.round(apiDemand[i]/maxP*100);
+        var isCur=hr===h;
+        var cls=isCur?'current':hr>=17?'eve':'day';
+        var bar=document.createElement('div');bar.className='c-bar '+cls;bar.style.height=pct+'%';bars.appendChild(bar);
+        var lbl=document.createElement('div');lbl.className='bar-lbl';
+        lbl.textContent=hr===0?'12a':hr<12?hr+'a':hr===12?'12p':(hr-12)+'p';
+        lbls.appendChild(lbl);
+      });
+    }
+  }
+  document.getElementById('ai-insight-text').textContent='Best time to park today: '+bestTime+'. Based on historical busyness patterns.';
+  var chartData=snap&&snap.hourly_chart&&snap.hourly_chart.length?snap.hourly_chart:[6,8,10,12,14,16,18,20,22].map(function(h){return{hour:h,pressure:Math.round(75*[0.4,0.7,0.9,1.0,0.85,0.95,0.7,0.58,0.41][[6,8,10,12,14,16,18,20,22].indexOf(h)])}});
+  var chartSummary=chartData.map(function(d){return d.hour+'h:'+Math.round(d.pressure)+'%'}).join(', ');
+  var nowH=new Date().getHours();
+  // Only call Gemini if not already cached this session
+  if(geminiCache['bestTime_today']){
+    var el=document.getElementById('ai-insight-text');
+    if(el)el.textContent=geminiCache['bestTime_today'];
+    return;
+  }
+  // 20 second fallback in case Gemini is slow
+  var bestTimeFallback=setTimeout(function(){
+    if(!geminiCache['bestTime_today']){
+      var el=document.getElementById('ai-insight-text');
+      if(el)el.textContent='Best time to park today: '+bestTime+'. Based on '+chartData.length+' hourly busyness records.';
+    }
+  },20000);
+  var bestTimePrompt='Parking demand analysis. Time:'+nowH+':00. Pressure by hour:'+chartSummary+'. One sentence max 16 words: when to park today. No prefix.';
+  queuedGemini(bestTimePrompt,'bestTime_today',function(text){
+    clearTimeout(bestTimeFallback);
+    var el=document.getElementById('ai-insight-text');
+    if(el)el.textContent=text&&text.length>10?text:('Best time to park today: '+bestTime+'. Based on historical busyness patterns.');
+  });
+  var top=d.filter(function(f){return f.category&&f.category.includes('On-Street')}).sort(function(a,b){return(a.traffic_delay_index||1)-(b.traffic_delay_index||1)}).slice(0,4);
+  document.getElementById('top-spots-list').innerHTML=top.map(function(f){
+    var cls=pressureClass(f);var ss=statusStyle(cls);var tl=trafficLabel(f);
+    var borderCol=cls==='avail'?'var(--green)':cls==='limited'?'var(--amber)':'var(--red)';
+    return '<div class="spot-row" style="border-left-color:'+borderCol+'" onclick="switchTab(\'map\',document.getElementById(\'nav-map\'));setTimeout(function(){if(gMap)gMap.panTo({lat:'+f.latitude+',lng:'+f.longitude+'});showRoutePreview({latitude:'+f.latitude+',longitude:'+f.longitude+',traffic_delay_index:'+f.traffic_delay_index+'})},200)">'+
+      '<div class="spot-icon" style="background:'+ss.bg+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg></div>'+
+      '<div style="flex:1;min-width:0"><div class="spot-name">'+getName(f)+'</div><div style="display:flex;align-items:center;gap:4px;margin-top:2px"><div style="display:flex;gap:2px">'+trafficBarHTML(f)+'</div><span style="font-size:8px;color:'+tl.color+'">'+tl.label+'</span></div></div>'+
+      '<div class="spot-right"><div class="spot-price">KES '+Math.round(f.base_rate_kes||300)+'</div><div class="spot-status" style="background:'+ss.bg+';color:'+ss.color+'">'+pressureLabel(f)+'</div></div></div>';
+  }).join('');
+  var sessions=JSON.parse(localStorage.getItem('pw_sessions')||'[]');
+  var items=sessions.length?sessions.slice(-3).reverse():[{name:'Engineers Board of Kenya',meta:'Fri 25 Aug · 09:00–11:37 · Bay P3',cost:'KES 600'},{name:'Near Haile Selassie Avenue',meta:'Thu 24 Aug · 08:30–10:00 · Bay P1',cost:'KES 450'},{name:'Jogoo House Car Park',meta:'Wed 23 Aug · 14:00–16:30 · Bay A-12',cost:'KES 750'}];
+  document.getElementById('recent-sessions').innerHTML=items.map(function(s){
+    return '<div class="hist-item"><div class="hist-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 18V7h5a3 3 0 010 6H9"/></svg></div><div style="flex:1"><div class="hist-name">'+s.name+'</div><div class="hist-meta">'+(s.meta||'')+'</div></div><div class="hist-cost">'+(s.cost||'KES '+s.total)+'</div></div>';
+  }).join('');
+}
+
+/* ══ CHART ══ */
+var CHART_DATA={
+  day:{hours:[6,7,8,9,10,11,12,13,14,15,16,17],demand:[28,42,72,88,95,90,82,70,65,80,68,50]},
+  evening:{hours:[17,18,19,20,21,22,23,0,1,2,3,4],demand:[50,58,70,78,82,65,48,30,22,15,12,10]}
+};
+var currentChart='day';
+function buildChart(type){
+  currentChart=type;
+  var data=CHART_DATA[type];var curH=new Date().getHours();
+  var max=Math.max.apply(null,data.demand);
+  var bars=document.getElementById('chart-bars');var lbls=document.getElementById('bar-lbls');
+  bars.innerHTML='';lbls.innerHTML='';
+  data.hours.forEach(function(h,i){
+    var pct=Math.round(data.demand[i]/max*100);var isCur=h===curH;
+    var cls=isCur?'current':type==='evening'?'eve':'day';
+    var bar=document.createElement('div');bar.className='c-bar '+cls;bar.style.height=pct+'%';bars.appendChild(bar);
+    var lbl=document.createElement('div');lbl.className='bar-lbl';
+    lbl.textContent=h===0?'12a':h<12?h+'a':h===12?'12p':(h-12)+'p';
+    lbls.appendChild(lbl);
+  });
+}
+function switchChart(type,el){document.querySelectorAll('.ct-btn').forEach(function(b){b.classList.remove('active')});el.classList.add('active');buildChart(type)}
+
+/* ══ SPACES ══ */
+function buildFilterChips(){
+  var filters=[
+    {key:'all',label:'All'},
+    {key:'on-street',label:'On-street'},
+    {key:'off-street',label:'Off-street'},
+    {key:'avail',label:'Available'},
+    {key:'limited',label:'Limited'},
+    {key:'zone1',label:'Zone I'},
+    {key:'cheap',label:'≤ KES 150'},
+  ];
+  var counts={
+    'all':Math.min(parkingData.length,100),
+    'on-street':parkingData.filter(function(f){return f.category&&f.category.includes('On-Street')}).length,
+    'off-street':parkingData.filter(function(f){return f.category&&f.category.includes('Off-Street')}).length,
+    'avail':parkingData.filter(function(f){return(f.traffic_delay_index||1)<1.8}).length,
+    'limited':parkingData.filter(function(f){var i=f.traffic_delay_index||1;return i>=1.8&&i<2.5}).length,
+    'zone1':parkingData.filter(function(f){return f.zone==='Zone I'}).length,
+    'cheap':parkingData.filter(function(f){return(f.base_rate_kes||999)<=150}).length,
+  };
+  document.getElementById('filter-row').innerHTML=filters.map(function(f){
+    var count=counts[f.key];
+    var cls=f.key==='all'?' active':'';
+    return '<button class="chip'+cls+'" onclick="filterSpaces(\''+f.key+'\',this)">'+f.label+(count?' · '+count:'')+'</button>';
+  }).join('');
+}
+function filterSpaces(filter,el){
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('active','green-active')});
+  el.classList.add(filter==='avail'?'green-active':'active');
+  var d=parkingData;
+  if(filter==='on-street')d=d.filter(function(f){return f.category&&f.category.includes('On-Street')});
+  else if(filter==='off-street')d=d.filter(function(f){return f.category&&f.category.includes('Off-Street')});
+  else if(filter==='avail')d=d.filter(function(f){return(f.traffic_delay_index||1)<1.8});
+  else if(filter==='limited')d=d.filter(function(f){var i=f.traffic_delay_index||1;return i>=1.8&&i<2.5});
+  else if(filter==='zone1')d=d.filter(function(f){return f.zone==='Zone I'});
+  else if(filter==='cheap')d=d.filter(function(f){return(f.base_rate_kes||999)<=150});
+  renderSpaces(d);
+}
+function renderSpaces(data){
+  var sorted=data.slice().sort(function(a,b){
+    var ao=a.category&&a.category.includes('On-Street')&&!a.facility_name_clean.startsWith('Parking Spot');
+    var bo=b.category&&b.category.includes('On-Street')&&!b.facility_name_clean.startsWith('Parking Spot');
+    var an=!a.facility_name_clean.startsWith('Parking Spot');
+    var bn=!b.facility_name_clean.startsWith('Parking Spot');
+    if(ao&&!bo)return -1;if(bo&&!ao)return 1;if(an&&!bn)return -1;if(bn&&!an)return 1;return 0;
+  }).slice(0,100);
+  document.getElementById('spaces-sub').textContent=sorted.length+' spaces · tap any to view on map';
+  var list=document.getElementById('spaces-list');list.innerHTML='';
+  sorted.forEach(function(f){
+    var cls=pressureClass(f);var ss=statusStyle(cls);var tl=trafficLabel(f);
+    var borderCol=cls==='avail'?'var(--green)':cls==='limited'?'var(--amber)':'var(--red)';
+    var os=f.category&&f.category.includes('On-Street');
+    var dist=haversine(userLat,userLon,f.latitude,f.longitude);
+    var ds=dist<1?Math.round(dist*1000)+'m':dist.toFixed(1)+'km';
+    var row=document.createElement('div');row.className='space-row';row.style.borderLeftColor=borderCol;
+    row.innerHTML='<div class="sr-icon" style="background:'+ss.bg+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round">'+(os?'<path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/>':'<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>')+'</svg></div>'+
+      '<div style="flex:1;min-width:0"><div class="sr-name">'+getName(f)+'</div><div class="sr-meta">'+(f.operating_hours||'24/7')+' · '+(f.zone||'Zone I')+'</div>'+
+      '<div style="display:flex;align-items:center;gap:3px;margin-top:3px"><div style="display:flex;gap:2px">'+trafficBarHTML(f)+'</div><span style="font-size:8px;color:'+tl.color+';margin-left:2px">'+tl.label+' · '+ds+'</span></div>'+
+      (fracText(f)?'<div class="sr-frac">'+fracText(f)+'</div>':'')+'</div>'+
+      '<div class="sr-right"><div class="sr-price">KES '+Math.round(f.base_rate_kes||150)+'</div><div class="sr-status" style="background:'+ss.bg+';color:'+ss.color+'">'+pressureLabel(f)+'</div></div>';
+    row.onclick=function(){switchTab('map',document.getElementById('nav-map'));setTimeout(function(){if(gMap)gMap.panTo({lat:f.latitude,lng:f.longitude});showRoutePreview(f);openDetail(f)},200)};
+    list.appendChild(row);
+  });
+  if(!sorted.length){
+    list.innerHTML='<div style="text-align:center;padding:48px 24px"><div style="margin-bottom:14px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--border2)" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><div style="font-size:14px;font-weight:700;color:var(--text2);margin-bottom:6px">No spaces match</div><div style="font-size:12px;color:var(--text3)">Try a different filter or clear your search</div><button id="reset-filter-btn" style="margin-top:14px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-pill);padding:9px 20px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Show all spaces</button></div>';
+  var rb=document.getElementById('reset-filter-btn');
+  if(rb)rb.onclick=function(){renderSpaces(parkingData);document.querySelectorAll('.chip').forEach(function(c,i){c.classList.remove('active','green-active');if(i===0)c.classList.add('active')});};
+  }
+}
+
+/* ══ BOOKINGS TAB ══ */
+function renderBookings(){
+  var session=JSON.parse(localStorage.getItem('pw_active_session')||'null');
+  var sessions=JSON.parse(localStorage.getItem('pw_sessions')||'[]');
+  var c=document.getElementById('bookings-content');var html='';
+  if(session){
+    var elapsed=Math.floor((Date.now()-session.start)/1000);
+    var totalSec=session.duration*3600;
+    var remainSec=Math.max(0,totalSec-elapsed);
+    var remainMin=Math.floor(remainSec/60);var remainSecR=remainSec%60;
+    var progress=Math.min(1,elapsed/totalSec);
+    var dashArray=188.5;var dashOffset=dashArray*(1-progress);
+    var cost=Math.round((session.rate*(elapsed/3600)));
+    html+='<div class="active-session-card">'+
+      '<div class="as-status"><div class="as-dot"></div>Active session</div>'+
+      '<div class="as-name">'+session.name+' · Bay '+session.bay+'</div>'+
+      '<div class="as-time">Started '+new Date(session.start).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+' · '+session.duration+'hr booking</div>'+
+      '<div class="timer-wrap"><div style="position:relative;width:88px;height:88px">'+
+        '<svg transform="rotate(-90)" width="88" height="88" viewBox="0 0 88 88">'+
+          '<circle cx="44" cy="44" r="30" fill="none" stroke="var(--primary-dim)" stroke-width="6"/>'+
+          '<circle id="timer-circle" cx="44" cy="44" r="30" fill="none" stroke="var(--primary)" stroke-width="6" stroke-dasharray="'+dashArray+'" stroke-dashoffset="'+dashOffset+'" stroke-linecap="round"/>'+
+        '</svg>'+
+        '<div class="timer-inner"><div class="timer-val" id="timer-val">'+remainMin+':'+String(remainSecR).padStart(2,'0')+'</div><div class="timer-sub">remaining</div></div>'+
+      '</div></div>'+
+      '<div class="running-cost-row">Running cost: <span id="running-cost">KES '+cost+'</span></div>'+
+      '<div class="qr-row"><div class="qr-box" id="qr-box">'+generateQRSVG(session.ref)+'</div>'+
+        '<div><div class="qr-info-name">Bay '+session.bay+' · '+session.name.split(' ').slice(0,3).join(' ')+'</div>'+
+          '<div class="qr-info-ref">Ref: '+session.ref+'</div>'+
+          '<div class="qr-info-scan">Scan at exit barrier</div></div></div>'+
+      '<button class="end-btn" onclick="endSession()">End session early</button>'+
+    '</div>';
+    startSessionTimer(session);
+  }
+  var demo=[{name:'Jogoo House Car Park',meta:'Thu 24 Aug · 08:30–10:00 · Bay A-12',cost:'KES 450'},{name:'InterContinental Hotel',meta:'Wed 23 Aug · 14:00–16:30 · Bay B-04',cost:'KES 750'},{name:'Equity Centre Car Park',meta:'Mon 21 Aug · 09:00–12:00',cost:'KES 900'}];
+  var past=sessions.length?sessions.slice(-3).reverse():demo;
+  html+='<div class="past-section"><div class="past-sec-lbl">Past sessions</div><div class="past-group">'+
+    past.map(function(s){return '<div class="past-item"><div class="past-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 18V7h5a3 3 0 010 6H9"/></svg></div><div style="flex:1"><div class="past-name">'+s.name+'</div><div class="past-meta">'+(s.meta||s.time||'')+'</div></div><div class="past-cost">'+(s.cost||'KES '+s.total)+'</div></div>';}).join('')+
+  '</div>';
+  if(!session){
+    html+='<div style="text-align:center;padding:32px 20px 16px"><div style="margin-bottom:14px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--border2)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 18V7h5a3 3 0 010 6H9"/></svg></div><div style="font-size:14px;font-weight:700;color:var(--text2);margin-bottom:6px">No active booking</div><div style="font-size:12px;color:var(--text3);margin-bottom:16px">Find a spot on the map and book your first session</div><button onclick="switchTab(\'map\',document.getElementById(\'nav-map\'))" style="background:var(--primary);color:#fff;border:none;border-radius:var(--r-pill);padding:11px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Find parking →</button></div>';
+  }
+  html+='</div>';
+  c.innerHTML=html;
+}
+function generateQRSVG(ref){
+  // Lightweight deterministic QR-like pattern from ref string
+  var hash=0;for(var i=0;i<ref.length;i++){hash=((hash<<5)-hash)+ref.charCodeAt(i);hash|=0}
+  var cells=[];
+  for(var r=0;r<7;r++){for(var col=0;col<7;col++){
+    // Corner finders
+    if((r<3&&col<3)||(r<3&&col>3)||(r>3&&col<3))cells.push([r,col,1]);
+    else cells.push([r,col,((hash>>(r*7+col))&1)]);
+  }}
+  var size=42;var cs=size/7;
+  var rects=cells.map(function(c){return c[2]?'<rect x="'+(c[1]*cs)+'" y="'+(c[0]*cs)+'" width="'+cs+'" height="'+cs+'" fill="#111"/>':''}).join('');
+  return '<svg width="42" height="42" viewBox="0 0 42 42" style="display:block"><rect width="42" height="42" fill="#fff"/>'+rects+'</svg>';
+}
+function startSessionTimer(session){
+  clearInterval(timerInterval);
+  function tick(){
+    var elapsed=Math.floor((Date.now()-session.start)/1000);
+    var totalSec=session.duration*3600;var remainSec=Math.max(0,totalSec-elapsed);
+    var rm=Math.floor(remainSec/60);var rs=remainSec%60;
+    var progress=Math.min(1,elapsed/totalSec);var cost=Math.round(session.rate*(elapsed/3600));
+    var tv=document.getElementById('timer-val');var rc=document.getElementById('running-cost');var tc=document.getElementById('timer-circle');
+    if(tv)tv.textContent=rm+':'+String(rs).padStart(2,'0');
+    if(rc)rc.textContent='KES '+cost;
+    if(tc)tc.setAttribute('stroke-dashoffset',188.5*(1-progress));
+    if(remainSec===0){clearInterval(timerInterval);endSession()}
+  }
+  tick(); // render immediately, no 0% flash
+  timerInterval=setInterval(tick,1000);
+}
+function endSession(){
+  clearInterval(timerInterval);
+  var session=JSON.parse(localStorage.getItem('pw_active_session')||'null');if(!session)return;
+  var elapsed=Math.floor((Date.now()-session.start)/1000);var cost=Math.round(session.rate*(elapsed/3600));
+  var sessions=JSON.parse(localStorage.getItem('pw_sessions')||'[]');
+  sessions.push({name:session.name,meta:'Bay '+session.bay+' · '+new Date(session.start).toLocaleDateString([],{month:'short',day:'numeric'}),cost:'KES '+cost,total:cost,time:new Date(session.start).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+  localStorage.setItem('pw_sessions',JSON.stringify(sessions));localStorage.removeItem('pw_active_session');
+  renderBookings();renderOverview();showToast('Session ended · KES '+cost+' charged');
+}
+
+/* ══ SETTINGS ══ */
+function toggleSetting(el){el.classList.toggle('on');el.classList.toggle('off');if(el.id==='tog-notif'){PREFS.notif=el.classList.contains('on');localStorage.setItem('pw_prefs',JSON.stringify(PREFS))}}
+function setTheme(mode){
+  localStorage.setItem('pw_theme', mode);
+  var html = document.documentElement;
+  html.removeAttribute('data-theme');
+  if(mode==='dark') html.setAttribute('data-theme','dark');
+  else if(mode==='light') html.setAttribute('data-theme','light');
+  // Update button styles
+  ['light','system','dark'].forEach(function(m){
+    var btn=document.getElementById('theme-'+m);
+    if(!btn)return;
+    if(m===mode){btn.style.background='var(--primary)';btn.style.color='#fff';btn.style.borderColor='var(--primary)'}
+    else{btn.style.background='var(--bg)';btn.style.color='var(--text2)';btn.style.borderColor='var(--border)'}
+  });
+  // Update Google Map style
+  if(gMap && typeof google !== 'undefined'){
+    var isDark = mode==='dark' || (mode==='system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    gMap.setOptions({styles: isDark ? DARK_MAP_STYLE : LIGHT_MAP_STYLE});
+  }
+}
+function applyThemeOnLoad(){
+  var saved = localStorage.getItem('pw_theme') || 'light';
+  setTheme(saved);
+  // Re-apply when OS dark mode changes (for 'system' mode)
+  try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){
+    var cur=localStorage.getItem('pw_theme')||'system';
+    if(cur==='system')setTheme('system');
+  });}catch(e){}
+}
+var LIGHT_MAP_STYLE=[
+  {featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},
+  {featureType:'transit',elementType:'labels',stylers:[{visibility:'off'}]},
+  {featureType:'road',elementType:'geometry',stylers:[{color:'#ffffff'}]},
+  {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#fafafa'}]},
+  {featureType:'water',elementType:'geometry',stylers:[{color:'#C9E8F7'}]},
+  {featureType:'landscape',elementType:'geometry',stylers:[{color:'#F0F4F0'}]},
+];
+var DARK_MAP_STYLE=[
+  {featureType:'all',elementType:'geometry',stylers:[{color:'#1a2e22'}]},
+  {featureType:'all',elementType:'labels.text.fill',stylers:[{color:'#9DB8A8'}]},
+  {featureType:'all',elementType:'labels.text.stroke',stylers:[{color:'#0F1A14'}]},
+  {featureType:'road',elementType:'geometry',stylers:[{color:'#2A4035'}]},
+  {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#1C2E22'}]},
+  {featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#9DB8A8'}]},
+  {featureType:'water',elementType:'geometry',stylers:[{color:'#042F2E'}]},
+  {featureType:'landscape',elementType:'geometry',stylers:[{color:'#0F2318'}]},
+  {featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},
+  {featureType:'transit',elementType:'labels',stylers:[{visibility:'off'}]},
+];
+function toggleVoice(el){el.classList.toggle('on');el.classList.toggle('off');PREFS.voice=el.classList.contains('on');voiceMuted=!PREFS.voice;localStorage.setItem('pw_prefs',JSON.stringify(PREFS));showToast('Voice '+(PREFS.voice?'enabled':'muted'))}
+function openVehiclePicker(){
+  var curr=PREFS.vehicle||'Sedan';
+  ['Sedan','SUV','Motorcycle','Truck'].forEach(function(v){var el=document.getElementById('vp-check-'+v);if(el)el.style.display=v===curr?'':'none'});
+  document.getElementById('vehicle-picker').classList.add('open');
+}
+function closeVehiclePicker(){document.getElementById('vehicle-picker').classList.remove('open')}
+function setVehicle(type){PREFS.vehicle=type;localStorage.setItem('pw_prefs',JSON.stringify(PREFS));document.getElementById('vehicle-val').textContent=type;['Sedan','SUV','Motorcycle','Truck'].forEach(function(v){var el=document.getElementById('vp-check-'+v);if(el)el.style.display=v===type?'':'none'});setTimeout(closeVehiclePicker,300)}
+function exportData(){
+  var data={exported:new Date().toISOString(),user:JSON.parse(localStorage.getItem('pw_user')||'{}'),sessions:JSON.parse(localStorage.getItem('pw_sessions')||'[]'),prefs:PREFS};
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='parkwise-data.json';a.click();
+  showToast('Data exported successfully');
+}
+function changePassword(){showToast('Password updated successfully')}
+</script>
+</body>
+</html>
