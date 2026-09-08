@@ -615,6 +615,25 @@ def occupancy_detect(
         try:
             result = run_cnn_inference(lat, lon, capacity)
             cnn_cache[cache_key] = {"ts": time.time(), "result": result}
+
+            # ── Save to DB in background (zero latency to user) ──────────
+            if facility_id is not None:
+                import threading
+                def _save_cnn():
+                    try:
+                        conn = db.get_connection()
+                        conn.run(
+                            "INSERT INTO cnn_counts (osm_id, car_count, image_source) "
+                            "VALUES (:osm_id, :car_count, :image_source)",
+                            osm_id=facility_id,
+                            car_count=result["car_count"],
+                            image_source=result.get("image_url"),
+                        )
+                        conn.close()
+                    except Exception as ex:
+                        print(f"[cnn_counts] DB write failed (non-fatal): {ex}")
+                threading.Thread(target=_save_cnn, daemon=True).start()
+
             return {
                 "osm_id":   facility_id,
                 "facility": fac["facility_name_clean"] if fac else None,
