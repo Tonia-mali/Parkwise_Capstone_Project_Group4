@@ -102,19 +102,37 @@ class PredictionRoutes(BaseRoutes):
             return rows_to_dicts(cols, result)
 
 
-# ── CNN Counts (stub) ─────────────────────────────────────────────────────────
+# ── CNN Counts ────────────────────────────────────────────────────────────────
 
 class CNNRoutes(BaseRoutes):
 
     def register(self):
 
-        @self.router.post("/cnn-counts", status_code=501)
-        def create_cnn_count(payload: CNNCountIn):
-            return {"status": "not implemented", "detail": "CNN integration pending Person 3's model."}
+        @self.router.post("/cnn-counts", status_code=201)
+        def create_cnn_count(payload: CNNCountIn, conn=Depends(get_db)):
+            """Manually insert a CNN count record."""
+            conn.run(
+                """INSERT INTO cnn_counts (osm_id, car_count, image_source)
+                   VALUES (:osm_id, :car_count, :image_source)""",
+                osm_id=payload.osm_id,
+                car_count=payload.car_count,
+                image_source=payload.image_source,
+            )
+            return {"status": "ok"}
 
-        @self.router.get("/cnn-counts/{osm_id}", status_code=501)
-        def get_cnn_counts(osm_id: int):
-            return {"status": "not implemented", "detail": "CNN integration pending Person 3's model."}
+        @self.router.get("/cnn-counts/{osm_id}")
+        def get_cnn_counts(osm_id: int, conn=Depends(get_db)):
+            """Return the 10 most recent CNN car count records for a facility."""
+            result = conn.run(
+                """SELECT id, osm_id, counted_at, car_count, image_source
+                   FROM cnn_counts
+                   WHERE osm_id = :osm_id
+                   ORDER BY counted_at DESC
+                   LIMIT 10""",
+                osm_id=osm_id,
+            )
+            cols = [c["name"] for c in conn.columns]
+            return rows_to_dicts(cols, result)
 
 
 # ── Users ─────────────────────────────────────────────────────────────────────
@@ -125,6 +143,7 @@ class UserRoutes(BaseRoutes):
 
         @self.router.post("/users", status_code=201)
         def create_user(payload: UserCreate, conn=Depends(get_db)):
+            """Create a new user or guest session."""
             result = conn.run(
                 """INSERT INTO users (email, password_hash, is_guest)
                    VALUES (:email, :pwd, :guest)
@@ -138,6 +157,7 @@ class UserRoutes(BaseRoutes):
 
         @self.router.get("/users/{user_id}")
         def get_user(user_id: int, conn=Depends(get_db)):
+            """Return a user by ID."""
             result = conn.run(
                 """SELECT id, email, is_guest, created_at, last_seen_at
                    FROM users WHERE id = :uid""",
@@ -150,7 +170,11 @@ class UserRoutes(BaseRoutes):
 
         @self.router.patch("/users/{user_id}/last-seen")
         def update_last_seen(user_id: int, conn=Depends(get_db)):
-            conn.run("UPDATE users SET last_seen_at = NOW() WHERE id = :uid", uid=user_id)
+            """Update last_seen_at timestamp for a user."""
+            conn.run(
+                "UPDATE users SET last_seen_at = NOW() WHERE id = :uid",
+                uid=user_id
+            )
             return {"status": "ok"}
 
 
