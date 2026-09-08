@@ -451,7 +451,7 @@ def predict_demand(
     predictions = [{"hour": h, "pressure": curve.get(h, curve.get(h-1, 75.0))} for h in chart_hours]
     current_pressure = curve.get(cur_hour, fac["parking_pressure_score"])
 
-    return {
+    result = {
         "facility_id":      fac["osm_id"],
         "facility_name":    fac["facility_name_clean"],
         "predictions":      predictions,
@@ -459,6 +459,28 @@ def predict_demand(
         "status":           pressure_to_status(current_pressure),
         "base_pressure":    round(fac["parking_pressure_score"], 1),
     }
+
+    # ── Save to demand_predictions in background (zero latency to user) ──
+    import threading
+    def _save_prediction():
+        try:
+            conn = db.get_connection()
+            conn.run(
+                "INSERT INTO demand_predictions "
+                "(osm_id, hour_of_day, day_of_week, pressure_score, demand_level) "
+                "VALUES (:osm_id, :hour, :dow, :pressure, :level)",
+                osm_id=fac["osm_id"],
+                hour=now.hour,
+                dow=now.weekday(),
+                pressure=round(current_pressure, 1),
+                level=pressure_to_status(current_pressure),
+            )
+            conn.close()
+        except Exception as ex:
+            print(f"[demand_predictions] DB write failed (non-fatal): {ex}")
+    threading.Thread(target=_save_prediction, daemon=True).start()
+
+    return result
 
 
 @app.get("/recommend")
