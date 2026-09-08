@@ -29,6 +29,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from database import db
 from endpoints import build_router
+from search import facility_search
 
 # ─────────────────────────────────────────────
 # 1. LIFESPAN  (must be defined before FastAPI())
@@ -40,7 +41,11 @@ async def lifespan(app: FastAPI):
     await db.connect()
     # ── CSV + model loading in background so port opens immediately ──────
     import threading
-    threading.Thread(target=load_data, daemon=True).start()
+    def _startup():
+        load_data()
+        # Build semantic search embeddings after facilities are loaded
+        facility_search.build(facilities)
+    threading.Thread(target=_startup, daemon=True).start()
     yield
     # ── Shutdown ─────────────────────────────────────────────────────────
     await db.disconnect()
@@ -425,7 +430,37 @@ def health():
         "model":            "loaded" if ml_model is not None else "curve_fallback",
         "cnn":              "loaded" if cnn_model is not None else "not_loaded",
         "sklearn_required": "1.9.0",
+        "semantic_search":  "ready" if facility_search._ready else "building",
     }
+
+
+@app.get("/search")
+def semantic_search(
+    q:     str = Query(..., description="Natural language search query"),
+    top_n: int = Query(10, ge=1, le=20, description="Number of results"),
+):
+    """
+    Semantic facility search using sentence embeddings.
+    Returns top_n facilities ranked by similarity to the query.
+    Used alongside Gemini — Gemini extracts filters, this finds similar facilities.
+    Results are merged on the frontend.
+    """
+    if not facilities:
+        raise HTTPException(status_code=503, detail="Facilities not loaded yet")
+
+    if not facility_search._ready:
+        # Embeddings still building — fall back to simple keyword match
+        ql = q.lower()
+        results = [
+            f for osm_id, f in facilities.items()
+            if ql in (f.get("facility_name_clean") or "").lower()
+            or ql in (f.get("display_name") or "").lower()
+        ][:top_n]
+        return {"results": results, "source": "keyword_fallback"}
+
+    osm_ids = facility_search.search(q, top_n=top_n)
+    results  = [facilities[oid] for oid in osm_ids if oid in facilities]
+    return {"results": results, "source": "semantic"}
 
 
 @app.get("/predict/demand")
