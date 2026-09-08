@@ -747,13 +747,34 @@ input{font-family:inherit;outline:none}
     <button onclick="closeGuestPrompt();showScreen('screen-auth');switchAuthTab('login')" style="width:100%;height:44px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-lg);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Sign in</button>
   </div>
 </div>
-<script src="parkingData.js"></script>
 <script>
-/* ══ FALLBACK DATA ══ */
-if(typeof parkingData==='undefined'||!parkingData.length){window.parkingData=[{facility_name_clean:'Engineers Board of Kenya',display_name:'Engineers Board of Kenya',latitude:-1.2918,longitude:36.8126,base_rate_kes:300,traffic_delay_index:1.0,operating_hours:'Mon-Fri 7AM-8PM',zone:'Zone I',category:'On-Street',tier:'tier1_cbd',overall_rating:4.2,estimated_capacity:21,security_score:4.1},{facility_name_clean:'Jogoo House Car Park',display_name:'Jogoo House Car Park',latitude:-1.2865,longitude:36.8194,base_rate_kes:150,traffic_delay_index:1.2,operating_hours:'Mon-Fri 7AM-6PM',zone:'Zone I',category:'Off-Street / Dedicated Lot',overall_rating:4.0,estimated_capacity:200,security_score:4.5},{facility_name_clean:'InterContinental Hotel Car Park',display_name:'InterContinental Hotel Car Park',latitude:-1.2871,longitude:36.8165,base_rate_kes:300,traffic_delay_index:2.6,operating_hours:'24/7',zone:'Zone I',category:'Off-Street / Dedicated Lot',overall_rating:4.5,estimated_capacity:150,security_score:4.8},{facility_name_clean:'Parking Spot',display_name:'Near Haile Selassie Avenue',latitude:-1.2845,longitude:36.8212,base_rate_kes:200,traffic_delay_index:1.6,operating_hours:'24/7',zone:'Zone I',category:'On-Street',overall_rating:null,estimated_capacity:18,security_score:3.2},{facility_name_clean:'Lavington Mall',display_name:'Lavington Mall',latitude:-1.2749,longitude:36.7766,base_rate_kes:300,traffic_delay_index:1.3,operating_hours:'24/7',zone:'Zone I',category:'On-Street',overall_rating:null,estimated_capacity:49,security_score:3.8}]}
-
 /* ══ API ══ */
 var API_BASE='https://parkwise-capstone-project-group4.onrender.com';
+
+/* ══ FACILITY DATA — loaded from PostgreSQL via /facilities ══ */
+window.parkingData = [];
+(function loadFacilities(){
+  fetch(API_BASE+'/facilities',{signal:AbortSignal.timeout(10000)})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(function(data){
+      window.parkingData = data;
+      if(typeof renderOverview==='function')renderOverview();
+      if(typeof renderSpaces==='function')renderSpaces(window.parkingData);
+      if(typeof renderMarkers==='function')renderMarkers();
+    })
+    .catch(function(err){
+      console.warn('[ParkWise] /facilities fetch failed, using fallback:',err);
+      window.parkingData=[
+        {facility_name_clean:'Engineers Board of Kenya',display_name:'Engineers Board of Kenya',latitude:-1.2918,longitude:36.8126,base_rate_kes:300,traffic_delay_index:1.0,operating_hours:'Mon-Fri 7AM-8PM',zone:'Zone I',category:'On-Street',tier:'tier1_cbd',overall_rating:4.2,estimated_capacity:21,security_score:4.1},
+        {facility_name_clean:'Jogoo House Car Park',display_name:'Jogoo House Car Park',latitude:-1.2865,longitude:36.8194,base_rate_kes:150,traffic_delay_index:1.2,operating_hours:'Mon-Fri 7AM-6PM',zone:'Zone I',category:'Off-Street / Dedicated Lot',overall_rating:4.0,estimated_capacity:200,security_score:4.5},
+        {facility_name_clean:'InterContinental Hotel Car Park',display_name:'InterContinental Hotel Car Park',latitude:-1.2871,longitude:36.8165,base_rate_kes:300,traffic_delay_index:2.6,operating_hours:'24/7',zone:'Zone I',category:'Off-Street / Dedicated Lot',overall_rating:4.5,estimated_capacity:150,security_score:4.8},
+        {facility_name_clean:'Parking Spot',display_name:'Near Haile Selassie Avenue',latitude:-1.2845,longitude:36.8212,base_rate_kes:200,traffic_delay_index:1.6,operating_hours:'24/7',zone:'Zone I',category:'On-Street',overall_rating:null,estimated_capacity:18,security_score:3.2},
+        {facility_name_clean:'Lavington Mall',display_name:'Lavington Mall',latitude:-1.2749,longitude:36.7766,base_rate_kes:300,traffic_delay_index:1.3,operating_hours:'24/7',zone:'Zone I',category:'On-Street',overall_rating:null,estimated_capacity:49,security_score:3.8}
+      ];
+      if(typeof renderOverview==='function')renderOverview();
+      if(typeof renderSpaces==='function')renderSpaces(window.parkingData);
+    });
+})();
 var GEMINI_KEY='__GEMINI_KEY_1__';
 var GEMINI_KEY2='__GEMINI_KEY_2__';
 var GEMINI_KEY3='__GEMINI_KEY_3__';
@@ -911,7 +932,18 @@ function doSignup(){
   if(!n)return showErr('su-err','Enter your name.');
   if(!e.includes('@'))return showErr('su-err','Enter a valid email.');
   if(p.length<6)return showErr('su-err','Password must be at least 6 characters.');
-  localStorage.setItem('pw_user',JSON.stringify({name:n,email:e}));enterApp(n,e);
+  // Save to database, enter app regardless of outcome
+  fetch(API_BASE+'/users',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:e,password_hash:p,is_guest:false}),
+    signal:AbortSignal.timeout(6000)
+  }).then(function(r){return r.json();}).then(function(data){
+    localStorage.setItem('pw_user',JSON.stringify({name:n,email:e,user_id:data.id}));
+  }).catch(function(){
+    localStorage.setItem('pw_user',JSON.stringify({name:n,email:e}));
+  });
+  enterApp(n,e);
 }
 function doLogin(){
   clearErr('li-err');
@@ -920,7 +952,18 @@ function doLogin(){
   if(!e.includes('@'))return showErr('li-err','Enter a valid email.');
   if(!p)return showErr('li-err','Enter your password.');
   var n=e.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase()});
-  localStorage.setItem('pw_user',JSON.stringify({name:n,email:e}));enterApp(n,e);
+  // Save to database, enter app regardless of outcome
+  fetch(API_BASE+'/users',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:e,password_hash:p,is_guest:false}),
+    signal:AbortSignal.timeout(6000)
+  }).then(function(r){return r.json();}).then(function(data){
+    localStorage.setItem('pw_user',JSON.stringify({name:n,email:e,user_id:data.id}));
+  }).catch(function(){
+    localStorage.setItem('pw_user',JSON.stringify({name:n,email:e}));
+  });
+  enterApp(n,e);
 }
 function doGoogle(){var n='Alex Kamau',e='alex.kamau@parkwise.co.ke';localStorage.setItem('pw_user',JSON.stringify({name:n,email:e}));enterApp(n,e)}
 function doSignOut(){
