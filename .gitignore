@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# ParkWise Nairobi project-specific
+.env
+DetectionPatches_512x512_ALL.zip
+esri_imagery/
+nairobi_parking_master_dataset.csv
